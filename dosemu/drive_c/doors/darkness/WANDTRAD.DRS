@@ -1,0 +1,37 @@
+;
+@TITLE:The Wandering Trader
+@VERSION:1.00
+@AUTHOR:JP
+@AREA:50
+;
+@SETCREDITS:7
+@RANDOMITEM
+|DTThrough a break the blinding sands you spot a figure leading a pack camel
+towards your direction. As the man approaches he removes the shemagh from his
+face revealing him to be an android.
+
+@FORMAT:|DT"Greetings, traveler. My name is David-6. I am a trader. I'm currently seeking to acquire an |LT$VRANDOMITEM|DT. If you have one you'd be willing to part with, I'd be happy to offer you a payment of |LT$VCREDITS credits|DT."
+
+@PROMPT:|DTDo you want to this trade? |IN
+@YESNO:NO
+
+@IFTRUE:TRADE
+:NOTRADE
+|LTYou decide to pass on David-6's offer and continue on your way.
+
+@GOTO:WRAPUP
+
+:TRADE
+@IFITEM:0:HASITEM
+@FORMAT:|LTYou search through your numerous bags, pouches, and pockets, but realize you don't actually have an |H1$VRANDOMITEM |LTto trade!
+
+@GOTO:WRAPUP
+
+:HASITEM
+|H1You make the exchange, much to David-6's excitement.
+@TAKEITEM:0:YES
+@GIVECREDITS:7:YES
+
+:WRAPUP
+|DTAfter a cordial farewell the android re-covers his face and tugs his camel's
+reins, quickly disappearing from sight.

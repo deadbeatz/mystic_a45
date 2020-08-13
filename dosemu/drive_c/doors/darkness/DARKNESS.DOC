@@ -1,0 +1,540 @@
+    __,---,____,---,____         ,---,____,---,____                  ,---,____
+    \                  /---,____/    /            /---,____,---,____/        /
+ ////    /        /            /      --/    /   /    ____              /___/
+   /    /                 / __     /        /        __/_/    /___/----,   ////
+  /___     /___ /        ,   /___ /   /___ /        /   /----,   /___ /   _\
+      `---'    `---/___ /   /    `---'    `---/___     ____ /   _\   `---'
+                       `---'                      `---'    `---'
+                             Darkness v2.0.0
+                   Copyright (c) 1998-2020 Jay Phillips
+
+Disclaimer
+---
+This software is provided "as is" and "with all faults." I make no
+representations or warranties of any kind concerning the safety, suitability,
+lack of viruses, inaccuracies, typographical errors, or other harmful
+components of this software. There are inherent dangers in the use of any
+software, and you are solely responsible for determining whether this software
+is compatible with your equipment and other software installed on your
+equipment. You are also solely responsible for the protection of your
+equipment and backup of your data, and I will not be liable for any damages
+you may suffer in connection with using, modifying, or distributing this
+software.
+
+
+Introduction
+---
+Darkness is a semi-competitive multi-player action/adventure BBS "door" game
+based on the Legend of the Red Dragon style of game play, featuring a post
+apocalyptic cyberpunk setting.
+
+Features:
+
+* Easy to setup and run!
+
+* Available in both a modern 32 bit Windows version and a 16 bit DOS compatible
+  version which can be used on retro systems, Linux and other alternative OSes,
+  and DOS emulators such as DOSBox.
+
+* Complete FOSSIL driver support for communications compatibility with most
+  classic dial-up BBS software and full DOOR32 support for socket sharing on
+  32/64 bit Windows telnet systems.
+
+* Supports the two most popular classic drop files formats: DOOR.SYS and
+  DORINFOx.DEF, along with the widely adopted DOOR32.SYS format supported on
+  modern 32 bit systems.
+
+* Full multi-node support including node notifications, node messaging, and
+  real-time player vs. player fights.
+
+* Powerful configuration and player editors which can be accessed from
+  inside the game for remote configuration changes.
+
+* Automatic game maintenance including the deletion of inactive characters and
+  players who create new characters but never actually play.
+
+* Inactivity timeout at 5 minutes to automatically boot AFK players. No one
+  wants their nodes to get all clogged up, do they?
+
+* Local SysOp side features, such as online chat and forcing disconnections.
+
+* SysOps can easily add additional random events by adding downloaded DRS
+  scripts using the built-in event editor included in the configuration
+  editor.
+
+* Developers can create custom random events using Darkness's incredibly easy
+  to use DRS scripting language.
+
+* Players can communicate in various ways, such as a "one liner" message
+  boards/walls, daily news announcements and comments, and email messages.
+
+* Characters can explore the high tech but devastated world of Darkness across
+  7 unique areas, including a central hub area featuring various activities.
+
+* A large variety of enemies to defeat and weapons and other gear to help
+  defeat them with!
+
+* A unique game world with subtle (and not so subtle) references to related
+  sci-fi, cyberpunk, and post apocalyptic works.
+
+* Free! Darkness is uncrippled emailware.
+
+
+About the 2.0 release
+---
+Darkness was originally started in 1998 as an attempt at a Legend of the Red
+Dragon clone during the lull in its development before Michael Preslar took it
+over for Gameport. I pivoted to an original setting early on, though I ceased
+work on it before many of the more interesting planned features were ever
+fleshed out, or even implemented at all.
+
+Still, Darkness was, at the time, my proudest accomplishment. A culmination of
+everything I had learned and accomplished during my years in the BBS scene. It
+was, in a way, also my send off to the scene, as "real life" started dominating
+my free time more and more, and various factors helped to lessen my overall
+interest and involvement in the hobby.
+
+Years later, despite having been a part of some amazing ANSI and ASCII groups,
+including the legendary CiA, numerous BBS modding groups including the one I
+founded and ran myself, Demonic Productions, helping found and run the Zeronet
+underground BBS message network, and being involved in numerous other notable
+projects, there are a great many in the current BBS scene who only know me for
+one thing: Darkness, which is still installed on numerous BBS systems to this
+day, owing in large part to being one of the first ever DOOR32.SYS games
+released.
+
+On one hand, it's great to have left behind a legacy. On the other hand,
+Darkness, as it stood at its last release in 2001, was garbage. The code was
+incredibly hacked together and included numerous major bugs, many features were
+totally incomplete, some of the fundamental designs were way off, and don't
+even get me started on how utterly riddled with incredible misspellings, typos,
+and ghastly grammar it was. I'm sure more SysOps than not skipped over it due
+to these issues. So much for my legacy, eh?
+
+I started, though never came anywhere close to finishing, numerous other BBS
+door games over the years but always knew I wanted to return to Darkness
+someday. I always felt like it would need a major redesign to ever be worth the
+effort, however, and I was totally out of ideas.
+
+In 2005 I put together a small door called IPLD which put Iniquity BBS's "IPL"
+scripting language into a standalone door, allowing for the quick creation of
+unique doors using only scripting. As a proof of concept, I also started coding
+a brand new version of Darkness using IPLD as its engine. This new version of
+Darkness was planned to be much more inspired by Internet MUDS and interactive
+fiction games, with large amount of verbose text. Despite IPLD being done and
+pretty cool, in my opinion, this version of Darkness 2.0 never came anywhere
+close to completion. People liked what little they saw of it, but there was
+never a fully featured design prepared for it.
+
+In 2008 I began work on a new door game called Underworld. Underworld took
+numerous queues from both the LORD style gameplay of Darkness and the MUD style
+of verbosity that Darkness 2.0 was going for, along with many other, more
+interesting features. I worked on the design and the game engine itself for
+several months, finishing approximately 30% of it before being side tracked
+and eventually abandoning it. Still, I was (and still am) very happy with much
+of the design work and programming that went into it, which in itself helped
+influence my return to Darkness.
+
+Finally, in 2016 I started efforts to AT LEAST get the original Darkness
+shored up into better condition, and began making numerous fixes and changes to
+its code. Fortunately, this version, dubbed "1.10" didn't last long. Inspired
+by my work on the IPLD version of Darkness and Underworld, small fixes changed
+into large redesigns, and I quickly outgrew the original Darkness code,
+determining that I'd need to simply start over, redesigning and recoding the
+entire game from the ground up, to really put out something I was happy with.
+Thus, this incarnation of Darkness 2.0 was born!
+
+Here were some of my early goals for the project:
+
+* Still a LORD clone, but huge changes to the overall gameplay structure.
+* Reworked, more mature setting.
+* More verbose, almost MUD-like, descriptions.
+* Spelling and grammar fixes. There's even capitalization!
+* More colors in the default theme, and more graphics to spice it up as well.
+* No more random, unfair death BS. Sorry about that.
+* Going after sleeping players is more costly. I hate getting killed every time
+  I log out in LORD! ;)
+* Integrated configuration/player editors for online editing.
+* Scripting language to replace more complicated IGM creation.
+
+...and that is just scratching the surface.
+
+I hope you enjoy Darkness 2.0! Unlike the original release of Darkness, I plan
+to support Darkness 2.0 for quite a while with fixes and new content, and
+hopefully leave a legacy I can be a little more proud of in my wake. In fact,
+as a hard stop was put on adding new features to this release, I've already got
+a nice selection of enhancements lined up for 2.1!
+
+
+Quick Setup!
+---
+1. Unzip the Darkness distribution archive into an empty directory of your
+   choice. This should be a location that your BBS software can access.
+2. Darkness includes two executables, DARK16.EXE and DARK32.EXE. Use the one
+   best suited to your operating system and BBS software - generally, if you're
+   using FOSSIL communications and classic drop files, you should be using the
+   16 bit version. If you're using DOOR32.SYS on a telnet system, you should
+   be using the 32 bit version.
+
+   Some SysOps may prefer to rename their chosen executable to "DARKNESS.EXE"
+   but this is purely personal preference.
+3. Execute the Darkness executable with the "/CFG" command line parameter to
+   enter configuration mode.
+4. Darkness will automatically create missing configuration files upon first
+   run. Re-run Darkness (with "/CFG") a second time.
+5. Press "C" to enter the BBS configuration options on the main menu.
+     A. The drop file directory should be set to the directory where your BBS
+        creates its drop file(s) when executing a door. You can use "#" to
+        equal the node number if your software puts the drop file for each node
+        in it's own directory. Example: "C:\MYSTIC\TEMP#".
+     B. Choose your drop file. DOOR.SYS and DORINFOx.DEF should be used with
+        16 bit systems and DOOR32.SYS with 32 bit, telnet systems. Note that
+        when using DORINFOx.DEF, Darkness will automatically look for
+        DORINFO<node number>.DEF first, and then try DORINFO1.DEF if it can't
+        find it.
+6. Darkness itself should now be setup. You can execute it using the "/L"
+   command line parameter to play it locally. You should do this before
+   attempting to execute this from your BBS just to know that your base
+   installation and configuration is working correctly.
+7. But who wants to play it alone? We need to set it up on your BBS software.
+   Since all BBS software function a little (sometimes a lot) differently when
+   it comes to external program setup, you'll need to consult the documentation
+   of your BBS software itself on how to setup door programs.
+
+   * Generally speaking, you'll need to find the command or option to execute
+     the a door with the appropriate drop file. For 16 bit systems, this would
+     be DOOR.SYS or DORINFOx.DEF. For 32/64 bit systems, this would be
+     DOOR32.SYS.
+   * This command will take some sort of parameters to specify the command line
+     (including command line parameters.) The directory that you extracted
+     Darkness into originally, and filename that of the executable you've
+     chosen to run.
+   * The only command line parameter REQUIRED for executing Darkness is the
+     node number you're launching from. This can be specified with the "/N"
+     command line parameter. Usually this is provided by passing a code rather
+     than specifying the node number statically.
+
+   Real world example using Mystic BBS v1.12 Alpha WIN32:
+
+   1. Enter your menu editor and navigate to the menu you wish to launch
+      Darkness from. DOORS, perhaps?
+   2. Add a new command to the menu with the key of your choice.
+   3. Add a new subcommand to this command, using the "D3" command.
+   4. For the "data" of the D3 command, enter the path to your 32 bit
+      Darkness executable, followed by the "/N%3" parameter.
+
+      Example: "C:\doors\darkness\dark32.exe /n%3"
+   5. Rejoice! You're done!
+
+
+Game Files
+---
+
+DARK16.EXE   - 16-bit MS-DOS version of the main Darkness executable.
+DARK32.EXE   - 32-bit Windows version of the main Darkness executable.
+DARKNESS.OVR - Overlay file used by the 16-bit Darkness executable.
+DARKTXT.DAT  - Text data file which stores Darkness's ANSI graphics.
+WANDTRAD.DRS - The Wandering Trader, an example DRS event script which comes
+               preconfigured.
+
+These files will be created after the first time Darkness is executed:
+
+DARKNESS.CFG - Text data file that stores Darkness's basic door driver
+               configuration data.
+DARKNESS.DAT - Binary data file that stores Darkness's configuration and game
+               data.
+DARKNESS.LOG - Text log file which normally will only record basic user
+               information and errors unless "Extended Logging" is enabled in
+               which case gameplay data will also be logged.
+DRSEVENT.DAT - Binary data file that stores data on configured DRS events.
+ENEMIES.DAT  - Binary data file that stores Darkness's enemy data.
+GEAR.DAT     - Binary data file that stores data on Darkness's gear (weapons,
+               armor, and cyberdecks.)
+MAIL.DAT     - Binary data file that stores all private player messages.
+PLAYERS.DAT  - Binary data file that stores all player and character data.
+TIPS.DAT     - Binary data file that stores all of the in-game tips.
+TNEWS.DAT    - Text data file that stores today's news.
+VERSION.DAT  - Binary data file that contains version upgrade information.
+WALLS.DAT    - Binary data file that stores the data for Darkness's numerous
+               in-game walls/oneliners.
+WOF.DAT      - Binary data file that stores Darkness's "Wall of Fame" winner
+               data.
+YNEWS.DAT    - Text data file that stores yesterday's news.
+
+Additionally Darkness uses a number of temporary semaphore files for inter-node
+communication. These files are cleaned up automatically but you may spot them
+in your Darkness directory from time to time. They can be safely ignored.
+
+Finally, any additional DRS event scripts you install may also be located in
+your Darkness directory.
+
+
+Which EXE do I use?
+---
+Darkness includes two executables, DARK16.EXE and DARK32.EXE.
+
+DARK32.EXE is for use operating systems capable of supporting WIN32 console
+applications. This includes older 32-bit versions of Windows, such as
+Windows XP and Windows 7 (32-bit) and newer, 64-bit operating systems such as
+Windows 7 (64-bit) and Windows 10.
+
+The 32-bit version of Darkness is intended for use with DOOR32.SYS based telnet
+systems that natively support passing socket handles via DOOR32.SYS including
+Mystic BBS and Synchronet 3.x. You may also be able to run Darkness via 16-bit
+MS-DOS compatible BBS software using a DOOR32.SYS shim such as NetFoss's NFU
+utility.
+
+Running Darkness on a 32-bit OS with a BBS software that does not support
+DOOR32.SYS can be most easily achieved by using DARK16.EXE and some variety of
+FOSSIL emulation. Darkness has been tested with NetFoss and Synchronet's fossil
+emulation.
+
+DARK16.EXE is intended for use with operating systems and emulators capable of
+running MS-DOS compatible 16-bit applications.
+
+While DARK16.EXE will indeed support traditional dial-up communications (with
+the use of a FOSSIL driver) it is primarily intended for compatibility with
+older MS-DOS based BBS software that do not include native telnet or DOOR32.SYS
+support, whether used via an normal FOSSIL driver or some sort of a fossil
+emulator to allow telnet connections.
+
+The second purpose of the 16-bit executable is to allow a wider range of
+support for non-Windows operating systems - in the past OS/2 has been reported
+to work, Linux users have been able to execute Darkenss via DOSEMU, and I've
+heard of OS/X users running it under DOSBox, for instance.
+
+Despite being a proper native MS-DOS application, DARK16.EXE was not developed
+on nor at all optimized to run on MS-DOS era appropriate hardware, therefore I
+make no claims  for it's performance when doing so. It might work just fine? If
+it does, let me know!
+
+
+Command Line Parameters
+---
+Darkness includes several optional command line parameters for compatibility
+with other BBS software and more unique configurations
+
+  L   - Local login and local IO only.
+  Nx  - Specify node number (Example: "DARK16.EXE /N1")
+  Dx  - Specify the drop file type, 1 - 3. 1 = DOOR32.SYS, 2 = DORINFOx.DEF,
+        3 = DOOR.SYS. (Example: "DARK16.EXE /D2")
+  Px  - Specify location of drop file, overriding node configuration.
+        (Example: "DARK16.EXE /PC:\BBS\DOORS")
+  CFG - Enter configuration editor (/L implied.)
+  ?   - Display command line help.
+
+Either / or - can be used to proceed switches.)
+
+Note: Despite the ability to specify all of the core required node setup
+details via command line parameter, your BBS is still required to be initially
+configured  in the configuration editor!
+
+
+Remote Configuration
+---
+Users can enter the configuration editor remotely by progress "*" from the
+game's pre-login menu. The user MUST have at least the same security level as
+has been defined in the configuration editor for this to function. This
+security level is pulled from the BBS's drop file.
+
+
+The Configuration Editor
+---
+[C] BBS Configuration - Critical configuration items related to the core
+  functionality of the door.
+  [S] SysOp Name - The name of your BBS's SysOp. This is displayed in-game as
+    well as tied to your registration (if registered.)
+  [B] BBS Name - The name of your BBS. This is displayed in-game as well as
+    tied to your registration (if registered.)
+  [R] Registration Code - The code given to you to activate your registration.
+  [D] Drop File Directory - The full path to the location where your BBS
+    software outputs its drop file. If your BBS puts dropfiles in a different
+    location for each node you can use "#" to represent the noden number.
+  [T] Drop File Type - Select the drop file type you wish to use: door32.sys,
+    door.sys, or dorinfo#.def.
+[O] Game Options - Strictly optional configuration items relating to both
+  gameplay and SysOp utility.
+  [A] SysOp Access Security Level - The ACS level required for accessing the
+    configuration editor remotely via "*" from the pre-login menu (see above.)
+    This is usually 255 or 250 with most BBSes/BBS software.
+  [B] Player Turns Per Day - The number of fights a player gets while outside
+    of the Safe Zone each day. The default is 20, which is also what the game
+    is balanced around. Change at your own risk!
+  [C] Number of Days Before Idle Players Are Deleted - If a player doesn't
+    enter the game AT ALL for this many days, they'll be automatically deleted.
+    Default is 30 days.
+  [D] Minutes before Players Are Kicked for Being Idle - Number of minutes that
+    players can be inactive before booted out of the door, back to the BBS.
+    Default is 5 minutes.
+  [E] Enable Extended (Gameplay) Logging - Normally logging only contains
+    errors along with some basic usage data. Enabling this option will also
+    log large amounts of player gameplay details. Note that this option is on
+    regardless of this setting in alpha and beta test versions of the game!
+  [F] Enable Bulletin File Generation - Enables the generation of bulletin
+    files, yes or no. Darkness will generate two bulletin files:
+    DRKDAILY.ANS/ASC which is generated once a day during daily maintenance,
+    and DRKLIVE.ANS/ASC which is generated each time a player exits the game.
+  [G] Bulletin File Output Directory - The full path to the location where you
+    want Darkness to output its bulletin files.
+  [H] Bulletin File Format - the format Darkness will create your bulletin
+    files in: ANSI, ASCII text, or both!
+
+Other Configuration Editor menu items:
+
+[E] Character Editor - Used to browse and edit current characters. Of
+  particular interest are the abilities to fully resurrect a player (as if they
+  logged in the next day after having been dead) or two fully reset their day
+  (restoring all daily variables!) This editor should be used with caution, if
+  at all!
+
+[D] DRS Events - Used to add DRS event scripts to your game, which add new
+  events to the various areas outside of the game world. In addition to adding,
+  deleting, and enabling and disabling events, you can also toggle which events
+  an area is active in. See the "Installing DRS Events" section below for step
+  by step instructions for using this editor.
+
+[S] Set All Players Offline - Character online status can temporarily get
+  stuck "online" if a player hangs up suddenly. This will be automatically
+  cleared the next time someone logs in from the node they were on. There is
+  also a process in the daily maintenance which will boot off any player who
+  has been stuck online for more than a day. If you don't want to wait that
+  long to clear off a stuck player you can use this option to toggle every
+  player to offline.
+
+[N] New Game - This will reset in-game data, including character records,
+  essentially resetting the currently in-progress game. It will retain your
+  basic configuration as well as particular game data not necessarily tied to
+  a single game (such as your Wall of Fame winners list and some other
+  statistics.)
+
+[R] Reset Configuration - This will reset ALL game data files, as if the game
+  were newly installed. You will need to reconfigure your basic BBS options
+  after using this option to get your game operation again. Use this with
+  extreme caution!
+
+
+Installing DRS Events
+---
+1. Launch Darkness with the "/CFG" parameter or, if remote, use "*" from the
+   login menu with an account with the appropriate security level.
+2. Press "E" to enter the DRS event configuration options on the main menu.
+3. Press "A" to add a new DRS event.
+4. Enter the script's filename. You can use relative or absolute paths here.
+5. If found, the script will be automatically enabled. Toggle to disabled if
+   desired.
+6. If the author of the DRS script included the proper meta data, the script
+   should automatically be enabled for the appropriate game world areas. If
+   not, or if you want to override this (not recommended) toggle each area
+   enabled or disabled.
+7. Done! This new event will automatically be added to the randomized event
+   selection process.
+
+
+Creating DRS Events
+---
+Darkness includes a Batch like language called DRS which can be used to easily
+create new random events. See the DRS.DOC file in this archive for a detailed
+document on script creation.
+
+
+Playing Locally
+---
+When running Darkness with no command line parameters (or using the "/L"
+parameter) Darkness will launch in local mode, using only local IO. The game
+will also prompt the local console user for their name, which will be used as
+the player's name instead of the BBS user name normally pulled from the drop
+file. This can allow you to login on an existing BBS user locally, or play as
+multiple non-BBS users if you choose. Local users can interact with remote
+users normally.
+
+
+SysOp Side Commands
+---
+Darkness provides SysOps with a number of local controls for interacting with
+the player on each console instance. Your ability to use these depends largely
+on how your BBS software handles the local console of BBS doors it executes but
+generally, if you can see the game's output while the game is running, you can
+use these commands:
+
+ ALT-Z - Cycle the local status bar display.
+ ALT-C - Chat. This will initiate a simple line chat program to chat with the
+         current player. Remote and local input colors are separate. Press
+         ALT-C again to exit chat.
+ ALT-H - Hang up. This will drop carrier on current node. How your BBS behaves
+         when a user drops carrier in a door will depend on the BBS software
+         itself, but most will immediately drop back to your waiting for caller
+         (WFC) screen.
+ ALT-K - Kick the player out of door. This will return user back to BBS without
+         dropping carrier, typically returning them to the screen from which
+         they launched the game.
+
+
+Support
+---
+Visit http://darkness.demonic.net for updates on Darkness and the latest
+downloads. Regular patches and updates are planned for the foreseeable future.
+
+Additional Darkness development news and feedback can be accessed on the
+author's BBS, Distortion. telnet://d1st.org. Please be sure to mention that
+you're there for Darkness support when applying. I can also be reached on BBSes
+connected to various message networks, including Zer0net, ArakNet, and
+AgoraNet.
+
+You can email darkness@demonic.net with any questions, bug reports,
+suggestions, or other feedback. I will try to respond to everything and
+although I may not accept every suggestion, I'm very open to making changes
+(or even adding content) based on user feedback.
+
+Finally, you can email me directly at jp@demonic.net for anything not directly
+related to Darkness itself.
+
+
+Registration
+---
+Darkness is free to use without registration and is not functionally crippled
+in any way. The only difference between a unregistered and registered version
+of Darkness the way some registration information specific screens appear.
+
+If you do wish to register your copy of Darkness, registration follows the
+"emailware" model. That is, all you need to do is send an email with your BBS
+name and SysOp name to receive a registration code. That's it! No additional
+information is collected, and nothing is published or re-sold.
+
+For details, see the REGISTER.TXT file included in this archive.
+
+
+Credits
+---
+Designed and coded by Jay Phillips (Jack Phlash)
+
+Nathan Case (Natedogg) - The author of XDoor, which makes up a good portion of
+Darkness's code, and was a big inspiration for starting it in the first place.
+Nathan also helped me with various coding examples and and hints in early
+development of 1.0.
+
+James Coyle (g00r00) - Responsible for the Virtual Pascal port of XDoor.
+Darkness would probably be completely unknown today if not for being one of the
+first door games with a stable Windows port and DOOR32 support.
+
+Textmode Artists:
+
+Cyberphreak (Sense) - The original, classic Darkness 1.0 logo.
+Grymmjack (Fokus/Used) - Two amazing logos first appearing in 1.0.
+Burps (Fuel) - New purple logo appearing in Darkness 2.0.
+Ungenannt (Blocktronics) - New Darkness 2.0 logo, headers, and scroller.
+
+Finally, Seth Robinson of RTSoft, author of Legend of the Red Dragon, which
+Darkness liberally barrows its basic gameplay design from, and more
+importantly, was unquestionably inspired by.
+
+Special shoutout to Darkness 1.0 IGM authors and modders for the support:
+Stoned Militia of Demonic, [ne0_akt] of Warlock, and Dream Master of DORE!
+
+And...
+
+A big thank you everyone who helped test 2.0 and particularly to Esc, Burps,
+Xqtr, and Digital Avatar for extended testing and feedback. Also to Maskreet
+for hosting the official beta test on the DoorParty door server!
+
+---
+EOF

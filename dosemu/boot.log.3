@@ -1,0 +1,104 @@
+FDPP kernel 1.0rc3 [GIT: ] (compiled Aug 13 2020)
+fdpp: plugin loaded
+CONF: Parsing built-in dosemu.conf file.
+CONF: Parsing /etc/dosemu/dosemu.conf file.
+CONF: Parsing built-in global.conf file.
+CONF: mapping driver = 'auto'
+debug flags: -a+cw
+CONF: Disabling use of pentium timer
+CONF: dosbanner on
+CONF: timer freq=18, update=54925
+CONF: CPU set to 586
+CONF: JIT CPUEMU set to 0 for 586
+CONF: CPU VM set to -1
+CONF: CPU VM set to -1 for DPMI
+CONF: 8192k bytes EMS memory
+CONF: EMS-frame = 0xe000
+CONF: DPMI-Server on (0x20000)
+CONF: DPMI linear reserve base addr = 0xffffffff
+CONF: DPMI linear reserve size = 0x8000
+CONF: PM DOS API Translator on
+CONF: No DJGPP NULL deref checks: on
+CONF: 8192k bytes XMS memory
+CONF: dosemu not running on console
+CONF: time mode = 'bios'
+SER: directory /var/lock namestub LCK.. binary No
+MOUSE: /dev/input/mice, type 7 using internaldriver: yes, emulate3buttons: no baudrate: 0
+CONF: **** Warning: floppy /dev/fd0 not accessible, disabled
+CONF: fastfloppy = 1
+default_drives 0
+Setting up drive C, ~/.dosemu/drive_c
+Creating default drive C
+Added drive 0 (80): ~/.dosemu/drive_c
+default_drives 1
+Setting up default drives from D
+Added drive 1 (81): /usr/share/dosemu/dosemu2-cmds-0.2
+Added drive 2 (82): /usr/share/fdpp
+Added drive 3 (83): /usr/share/comcom32
+CONF: IPX support off
+CONF(LPT0) f: (null)   c: lpr -l  t: 20  port: 0
+CONF(LPT1) f: (null)   c: lpr -P PDF  t: 20  port: 0
+CONF: not allowing speaker port access
+CONF: Packet Driver enabled.
+CONF: NE2000 disabled.
+CONF: config variable c_system unset
+Linux kernel 4.15.0; CPU speed is 4000255000 Hz
+CPU-EMU speed is 4000 MHz
+CONF: not running on console
+CONF: mostly running as USER: uid=1000 (cached 1000) gid=1000 (cached 1000)
+CONF: priv operations unavailable
+DBG_FD already set
+DOSEMU-2.0pre8 is coming up on Linux version 4.15.0-112-generic #113-Ubuntu SMP Thu Jul 9 23:41:39 UTC 2020 x86_64
+Compiled with gcc version 7.5.0 64bit
+CFLAGS: -Wall -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -fms-extensions -pthread -imacros config.hh -Wno-unused-result -Wcast-qual -Wwrite-strings -fplan9-extensions -Wno-maybe-uninitialized -fpie -ggdb3 -g -O2 -fdebug-prefix-map=/build/dosemu2-PaEu2t/dosemu2-2.0~pre8-6303=. -fstack-protector-strong -Wformat -Werror=format-security
+CONF: reserving 640Kb at 0x00000 for 'd' (Base DOS memory (first 640K))
+CONF: reserving 8Kb at 0xFC000 for 'r' (Dosemu reserved area)
+CONF: reserving 8Kb at 0xFE000 for 'b' (BIOS)
+ERROR: KVM: error opening /dev/kvm: No such file or directory
+KVM not available: No such file or directory
+using CPU emulation for vm86()
+initial register values: fs: 0x0000  gs: 0x0000 eflags: 0x0246
+initial segment bases: fs: 0x7fd701c4c740  gs: (nil)
+CONF: reserving 128Kb at 0xA0000 for 'v' (Video memory)
+Conventional memory mapped from 0x7fd6fcbd1000 to 0x415b0000
+DPMI memory mapped to 0x416c0000 (reserve) and to 0x436c0000 (main)
+CONF: reserving 8256Kb at 0x100000 for 'x' (Extended memory (HMA+XMS))
+VID: Video set to Video_term
+Registering HWRAM, type=e base=0x4b8b6000 size=0x400000
+CONF: reserving 4096Kb at 0x4B8B6000 for 'e' (VGAEMU LFB)
+loading fonts for cp437
+CONF: reserving 4Kb at 0xC0000 for 'V' (VGAEMU Video BIOS)
+SERIAL $Id$
+fluidsynth sound font unavailable at share/soundfonts/default.sf2
+ERROR: alsa_midi (ALSA lib): seq_hw.c:466:(snd_seq_hw_open) : No such file or directory open /dev/snd/seq failed
+DPMI: mem init, mpool is 136273920 bytes at 0x436c0000
+ERROR: Unable to open console or check with X to evaluate the keyboard map.
+Please specify your keyboard map explicitly via the $_layout option. Defaulting to US.
+TIME: using 9154 usec for updating ALRM timer
+======================= ENTER CPU-EMU ===============
+
+CONF: freeing region for 'E' (EMS page frame)
+INFO: booting with comcom32, this is very experimental
+config.int_hooks set to 0
+config.force_revect set to 0
+CONF: reserving 124Kb at 0xC1000 for 'U' (Upper Memory Block (UMB, XMS 3.0))
+CONF: reserving 48Kb at 0xF0000 for 'U' (Upper Memory Block (UMB, XMS 3.0))
+CONF: reserving 16Kb at 0xE0000 for 'E' (EMS page frame)
+CONF: reserving 16Kb at 0xE4000 for 'E' (EMS page frame)
+CONF: reserving 16Kb at 0xE8000 for 'E' (EMS page frame)
+CONF: reserving 16Kb at 0xEC000 for 'E' (EMS page frame)
+DOS termination requested
+leavedos(do_doshelper:64|0) called - shutting down
+1 threads still active
+leavedos thread started
+leavedos thread ended
+	tid=261 state=3 name=fdpp thr off=0
+coopthreads stopped
+======================= LEAVE CPU-EMU ===============
+
+
+Package info:
+dosemu2: installed
+dosemu2	2.0~pre8-6303-379e92896+202008102359~ubuntu18.04.1
+fdpp: installed
+fdpp	1.0~rc3-1013-001ef31+202008130332~ubuntu18.04.1

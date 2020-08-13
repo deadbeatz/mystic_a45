@@ -1,0 +1,1474 @@
+    __,---,____,---,____         ,---,____,---,____                  ,---,____
+    \                  /---,____/    /            /---,____,---,____/        /
+ ////    /        /            /      --/    /   /    ____              /___/
+   /    /                 / __     /        /        __/_/    /___/----,   ////
+  /___     /___ /        ,   /___ /   /___ /        /   /----,   /___ /   _\
+      `---'    `---/___ /   /    `---'    `---/___     ____ /   _\   `---'
+                       `---'                      `---'    `---'
+                           DRS Event Scripting Guide
+                              For Darkness v2.0.0
+
+Introduction
+---
+Darkness includes a simple scripting language intended for the quick creation
+of in-game "event" content, similar to the in-game modules (IGMs) featured in
+previous versions of Darkness. Unlike IGM creation, however, creating a DRS
+script requires next to no programming knowledge.
+
+DRS stands for "Darkness REF Script" and is highly inspired by Exitilus's Quest
+(QST) scripting language, Legend of the Red Dragon 2's RTReader (REF) scripting
+language, MS-DOS Batch scripting, and classic implementations of the BASIC
+programming language.
+
+DRS is exceedingly simple, intended mostly for the output of interactive text:
+
+* DRS scripts are parsed line by line, outputting all text encountered with the
+  exception of labels, commands, and comments.
+* With the exception of color code and variable parsing, text is assumed to be
+  pre-formatted, although there are a number of optional formatting commands
+  that can be used for greater control.
+* DRS is an unstructured language, relying only on label jumps for control
+  structure, though it does allow for basic recursion for access to previously
+  defined labels.
+* Beyond basic range checking, DRS features practically zero error checking
+  with most invalid commands simply being ignored, and parameters being
+  replaced with default values.
+* Furthermore, DRS lacks advanced logic, mathematics, and other functions found
+  in even the simplest languages.
+
+
+Basic Script Structure
+---
+DRS script files are text files, usually with the .DRS extension, and usually
+residing in your Darkness program directory.
+
+All text in a DRS script (including blank lines!) that is not a label, a
+pre-defined command, or a comment, is assumed to be output. This text will be
+parsed for color codes (color and theme pipe along with RTSoft style color
+codes) and special variables defined later in this document.
+
+A script's start and end does not need to be defined, rather it is assumed the
+script starts with the first line of the text file and ends when the EOF marker
+is encountered.
+
+User-defined labels start with ":" and should be placed at the first column on
+their own line. Labels will not be output when parsed.
+
+Commands start with '@' and should be placed at the first column on their own
+line. Valid commands will not be output when parsed, though may produce their
+own output depending on function.
+
+Commands can have up to two parameters, depending on the specific commands.
+Parameters are delineated by ':' immediately after the command, with no
+spaces. Example: @COMMAND:parameter1:parameter2
+
+Line comments start with ";" and should be placed at the first column on their
+own line. Comments will be ignored by the parser. In-line comments and block
+comments are not included in DRS at this time.
+
+Commands and their parameters, along with variables and labels, are always
+case-insensitive.
+
+Booleans can be specified as TRUE or FALSE *or* YES or NO. Whatever floats
+your boat.
+
+
+Command Reference
+---
+
+Meta Commands:
+--
+
+@TITLE:<string>
+
+  Description: Define the title of the script. At present, this title string
+  is only referenced in the script configuration section of Darkness's
+  configuration editor.
+
+  Parameter 1: The title of the script, up to 40 characters.
+
+  Usage
+
+  @TITLE:Example Script
+
+@AUTHOR:<string>
+
+  Description: Define the author of the script. At present, this author string
+  is only referenced in the script configuration section of Darkness's
+  configuration editor.
+
+  Parameter 1: The author of the script, up to 30 characters.
+
+  Usage:
+
+    @AUTHOR:John Scriptman
+
+@VERSION:<string>
+
+  Description: Define the version of the script. At present, this version
+  string is only referenced in the script configuration section of Darkness's
+  configuration editor.
+
+  Parameter 1: The version of the script, up to 10 characters.
+
+  Usage:
+
+    @VERSION:1.2.1
+
+@AREA:<number>
+
+  Description: Define which areas the script is active as a random event in.
+  This command is only used when adding a new script to the script
+  configuration section in Darkness's configuration editor to set defaults.
+  The actual areas a script is active in can be overridden in the editor if
+  the SysOp chooses.
+
+  Parameter 1: Use "ALL" to specify that the script is area in all 5 of the
+  non-Safe Zone areas. Use "TEST" to specify that the script is available for
+  testing from within the game. Otherwise, specify one or as many zone numbers
+  as you want the script active in.
+
+  Usage:
+
+    ;Activate Script in Areas 2 and 3
+    @AREA:23
+
+
+Structure Commands:
+--
+
+@GOTO:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered. Will recurse through the current script to reference
+  previously defined labels if label is not defined below where this command
+  is called.
+
+  Parameter 1: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    ;Go to "Goodbye.", skipping "Hello!"
+    @GOTO:NEWLABEL
+    Hello!
+
+    :NEWLABEL
+    Goodbye.
+
+
+Output/Formatting Commands:
+--
+
+@XY:<xx>:<yy>
+
+  Description: Move cursor to specified screen coordinates. Note: if your text
+  is scrolling on the Y axis rather than a static screen, it's recommended you
+  don't use this command for compatibility with different terminal sizes.
+
+  Parameter 1: X coordinate.
+
+  Parameter 2: Y coordinate.
+
+  Error checking: X and Y ranges must be within normal 80x25 screen size.
+
+  Usage:
+
+    ;Move cursor to 1,24.
+    @XY:01:24
+
+@X:<xx>
+
+  Description: Move cursor to specified screen X (column) coordinate.
+
+  Parameter 1: X coordinate.
+
+  Error checking: X range must be within normal 80x25 screen size.
+
+  Usage:
+
+    ;Change Test to Best, because this is the best test!
+    @PROMPT:Test!
+    @X:01
+    B
+
+@Y:<yy>
+
+  Description: Move cursor to specified screen Y (row) coordinate. Note: if your
+  text is scrolling on the Y axis rather than a static screen, it's recommended
+  you don't use this command for compatibility with different terminal sizes.
+
+  Parameter 1: Y coordinate.
+
+  Error checking: Y range must be within normal 80x25 screen size.
+
+  Usage:
+
+    ;Insert a title on line one!
+    @CLEAR
+    @NL
+    @NL
+    |DTThis is a test.
+    @Y:01
+    |LTTitle!
+
+@UP
+
+  Description: Move the cursor Y position up one space.
+
+  Usage:
+
+    @UP
+
+@DOWN
+
+  Description: Move the cursor Y position down one space.
+
+  Usage:
+
+    @DOWN
+
+@LEFT
+
+  Description: Move the cursor X position left one space.
+
+  Usage:
+
+    @LEFT
+
+@RIGHT
+
+  Description: Move the cursor X position right one space.
+
+  Usage:
+
+    @RIGHT
+
+@NL
+
+  Description: Send carriage return and new line characters, finishing the
+  current line and starting a new one.
+
+  Normally all text will be parsed out as a complete line, including blank
+  lines, but this command can help when trying to get output as exact as
+  possible, as well as to start a new line after using @PROMPT or manipulating
+  the cursor position.
+
+  Usage:
+
+    @PROMPT:The cursor will be left on this line.
+    @NL
+    ;Now it's a complete line.
+
+@ANSI:<filename>:<screen pause?>
+
+  Description: Display an ANSI or ASCII file. ANSI codes parsed as normal.
+
+  Parameter 1: File name. Can be absolute, but will usually be relative (AKA
+  inside the Darkness program directory.)
+
+  Parameter 2: Should screen pausing be active on long ANSIs? YES or NO.
+  Usually enabled for long screens of text, and disabled for long pieces of
+  artwork. Default is no.
+
+  Usage:
+
+    @ANSI:EXAMPLE.ANS:YES
+
+@DIVIDER
+
+  Description: Outputs a color scheme/theme based divider bar on the current
+  line.
+
+  Usage:
+
+    |TIThis is a title.
+    @DIVIDER
+    |DThis is some |LTfancy |DTtext!
+
+@CLEAR
+
+  Description: Clear the screen.
+
+  Usage:
+
+    @CLEAR
+
+@PAUSE
+
+  Description: Display a pause prompt and wait for a key press.
+
+  Usage:
+
+    @PAUSE
+
+@FORMAT:<text string>
+
+  Description: Outputs a string of text properly formatted with leading line
+  spaces and word-wrapping.
+
+  Parameter 1: A string of text up to 255 characters long. Color codes and
+  variables will also be parsed, so be careful with the length!
+
+  Usage:
+
+    @FORMAT:|DTThis is a |LTstring |DTof text that I wanted formatted.
+
+@PROMPT:<text string>
+
+  Description: Outputs a string of text without a trailing CRLF. This is most
+  useful for player input prompts.
+
+  Parameter 1: A string up text. Should typically be less than a single 80
+  column line.
+
+  Usage:
+
+    @PROMPT:|DTCommand|DE? |IN
+
+@CENTER:<text string>
+
+  Description: Centers a string within a single 80 column line.
+
+  Parameter 1: A string up text. Should be less than a single 80 column line,
+  otherwise what's the point?
+
+  Usage:
+
+    @CENTER:This is a title!
+
+@CLEAREOL
+
+  Description: Clears the current line from the current cursor position to the
+  end of the line.
+
+  Usage:
+
+    ;Outputs "Hello"
+    @PROMPT:Hello, fella
+    @X:6
+    @CLEAREOL
+
+@GENDER:<male string>:<female string>
+
+  Description: Defines a string based on the player character's gender,
+  accessed with the variable $GENDER. Note that this can be any part of speech
+  you desire to use.
+
+  Parameter 1: A string up text corresponding to "Male" gender. Usually just a
+  single word.
+
+  Parameter 2: A string up text corresponding to "Female" gender. Usually just a
+  single word.
+
+  Usage:
+
+    @GENDER:buddy:lady
+    How's it going, $GENDER?
+
+
+Input/Logic Commands:
+--
+
+@YESNO:<default>
+
+  Description: Outputs a Yes/No prompt. The choice (Yes or No) will be
+  defaulted according to the parameter provided. The result of the player
+  choice can be accessed with the @IFTRUE and @IFFALSE commands.
+
+  Parameter 1: Default value for prompt. YES or NO.
+
+  Usage:
+
+    @PROMPT:Are you happy?
+    @YESNO:YES
+
+@IFTRUE:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the internal boolean variable is
+  currently set to TRUE.
+
+  Parameter 1: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFTRUE:HAPPY
+    Cheer up. :(
+    @GOTO:END
+
+    :HAPPY
+    Good! :)
+    :END
+
+@IFFALSE:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the internal boolean variable is
+  currently set to FALSE.
+
+  Parameter 1: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFFALSE:UNHAPPY
+    Good! :)
+    @GOTO:END
+
+    :UNHAPPY
+    Cheer up. :(
+    :END
+
+@GETKEY:<suppress output?>
+
+  Description: Gets a single character/key of input. The result of the input
+  can be accessed with the @IFKEY command.
+
+  Parameter 1: Suppress output? YES or NO. If no (default) the key will be
+  output to the screen with a CRLF. If yes, no output will be done at all.
+
+  Usage:
+
+    @PROMPT:|DTCommand|DE: |IN
+    @GETKEY
+
+@IFKEY:<key>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the internal key variable is currently
+  set to the specified key.
+
+  Parameter 1: The key/character to match against.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    :GETKEY
+    @PROMPT:|DTCommand|DE? |IN
+    @GETKEY
+    @IFKEY:Q:QUIT
+
+    Bad Command
+    @GOTO:GETKEY
+    :QUIT
+
+    Quitting!
+
+@SETRANDOM:<maximum number>
+
+  Description: Generates a random number and sets an internal variable, which
+  can be accessed with the @IFRANDOM command or the $VRANDOM variable, to the
+  result.
+
+  Parameter 1: The maximum (integer) number of the range. The range is 1 based.
+
+  Usage:
+
+    ;Generate a number between 1 and 10.
+    @SETRANDOM:10
+    The result is $VRANDOM.
+
+@IFRANDOM:<key>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the internal random number variable is
+  currently set to the specified value.
+
+  Parameter 1: The integer number to match against. For best results, should be
+  within the range previously defined by @SETRANDOM.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    ;1 = heads, 2 = tails
+    @PROMPT:|DTHeads or tails? |IN
+    @SETRANDOM:2
+    @IFRANDOM:2:TAILS
+    ;Value was 1
+    Heads!
+    @GOTO:END
+    ;Value was 2
+    :TAILS
+    Tails!
+    :END
+
+
+Gameplay/Logic Commands
+--
+
+@IFAREA:<which area?>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player is currently in the specified
+  area number.
+
+  Parameter 1: The area number to match. Typically between 1 and 6 for the
+  purpose of random events.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFAREA:1:CENTRALCITY
+    You have no idea where the hell you are.
+    @GOTO:END
+    :CENTRALCITY
+    You can see the Safe Zone walls from here, guiding you back home.
+    @GOTO:END
+    :END
+    @NL
+    @PAUSE
+
+@ENEMY:<enemy record>
+
+  Description: Spawn an enemy encounter. The supplied parameter specifies which
+  enemy to spawn. If the player dies, the death will be handled within the
+  fighting routine rather than your script. If the player runs, you'll need to
+  handle it yourself (if desired) using @IFRAN.
+
+  Parameter 1: The 1 based record number of the enemy you wish to spawn.
+
+  Usage:
+
+    You're in trouble now!
+
+    @ENEMY:43
+
+@IFRAN:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the internal ran variable is currently
+  set to true. Used in conjunction with the @ENEMY command to handle situations
+  where the player runs away from an encounter instead of defeating it
+  normally.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    You've got to fight to prove your status, $GENDER!
+
+    :STARTFIGHT
+    @ENEMY:12
+    @IFRAN:WUSS
+
+    Congratulations, you did it!
+    @GOTO:QUIT
+    :WUSS
+
+    Really? You ran away?! Not on my watch...
+
+    @GOTO:STARTFIGHT
+    :QUIT
+
+@GIVEXP:<how much XP to give>:<show output?>
+
+  Description: Award the player with some experience points!
+
+  Parameter 1: The number of experience points to give. This is a relative
+  value, typically between 1 and 10, 1 being a small amount, 10 being a large
+  amount. This value will also be leveled, meaning that whatever you type in
+  will be multiplied based on the player's current level! You can display the
+  final number by using the $VXP variable.
+
+  Parameter 2: Show output? YES or NO. If yes, a pre-defined string will be
+  displayed indicating how much experience was awarded. If no (default) then
+  no output will be done at all.
+
+  Usage:
+
+    ;This is a level 2 player... this should award the player 40 experience
+    ;points - value * 10 * level
+    @PROMPT:You've been a good boy lately, have some XP!
+    @GIVEXP:5
+    Here's $VXP experience!
+
+@GIVEITEM:<item number>:<suppress output?>
+
+  Description: Award the player with an item. Item name can be accessed with
+  $VITEM variable. If a random value is specified, $VRANDOMITEM also works.
+
+  Parameter 1: The item number, 1 - 10, to give the player. Additionally, there
+  are some special values that can be specified:
+
+    0 : Random item. Can be pre-randomized with @RANDOMITEM, otherwise will
+        be randomized when the command is parsed.
+  101 : Today's chosen Bionics Store trade item.
+  102 : Today's chosen Stims Store trade item.
+  103 : Today's chosen Bar "Collector" trade item.
+  104 : Today's chosen Bar "Officer" trade item.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating which item was awarded. If yes then no output
+  will be done at all.
+
+  Error checking: Item quantity cannot increment above 255.
+
+  Usage:
+
+    ;Give the player item #2 and show the award string.
+    You open a chest...
+
+    @GIVEITEM:2
+
+@TAKEITEM:<item number>:<suppress output?>
+
+  Description: Take an item away from the player. Item name can be accessed
+  with $VITEM variable. If a random value is specified, $VRANDOMITEM also
+  works.
+
+  Parameter 1: The item number, 1 - 10, to take from the player. Additionally,
+  there are some special values that can be specified:
+
+    0 : Random item. Can be pre-randomized with @RANDOMITEM, otherwise will
+        be randomized when the command is parsed.
+  101 : Today's chosen Bionics Store trade item.
+  102 : Today's chosen Stims Store trade item.
+  103 : Today's chosen Bar "Collector" trade item.
+  104 : Today's chosen Bar "Officer" trade item.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating which item was taken. If yes then no output
+  will be done at all.
+
+  Error checking: Item quantity cannot drop below 0.
+
+  Usage:
+
+    ;Take item #3 from the player. Custom string!
+    @TAKEITEM:3:YES
+    You've lost a $VITEM. Sorry about that!
+
+@IFITEM:<item number>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player has at least 1 of the specified
+  item in their inventory.
+
+  Parameter 1: The item number, 1 - 10, to take from the player. Additionally,
+  there are some special values that can be specified:
+
+    0 : Random item. Can be pre-randomized with @RANDOMITEM, otherwise will
+        be randomized when the command is parsed.
+  101 : Today's chosen Bionics Store trade item.
+  102 : Today's chosen Stims Store trade item.
+  103 : Today's chosen Bar "Collector" trade item.
+  104 : Today's chosen Bar "Officer" trade item.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    ;Take an item away, but only if it exists.
+    @IFITEM:1:TAKEITEM
+    Err, looks like you don't have one. All well...
+    @GOTO:END
+    :TAKEITEM
+    @TAKEITEM:1
+    :END
+
+@RANDOMITEM
+
+  Description: Randomize the random number variable to be one of the 10 trade
+  items a player can collect. The purpose of this is to show a player what a
+  random item might be BEFORE giving or taking it.
+
+  Usage:
+
+    ;Give a player a random item, if they want it.
+    @RANDOMITEM
+    Do you want a free $VRANDOMITEM?
+    @YESNO:YES:AWARD
+    @GOTO:END
+    :AWARD
+    @GIVEITEM:0
+    :END
+
+@GIVECREDITS:<how many credits to give>:<suppress output?>
+
+  Description: Award the player with some credits.
+
+  Parameter 1: The number of credits to give. This is a relative value,
+  typically between 1 and 10, 1 being a small amount, 10 being a large amount.
+  This value will also be leveled, meaning that whatever you type in will be
+  multiplied based on the player's current level! You can display the final
+  number by using the $VCREDITS variable.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating how many credits awarded. If yes then no output
+  will be done at all.
+
+  Usage:
+
+    ;This is a level 2 player... this should award the player 250 credits.
+    ;points: value * 25 * level
+    @PROMPTHappy birthday, have some credits!
+
+    @SETCREDITS:5
+    Here's $VCREDITS credits!
+
+@TAKECREDITS:<how many credits to take>:<suppress output?>
+
+  Description: Take some (on hand) credits from the player.
+
+  Parameter 1: The number of credits to take. This is a relative value,
+  typically between 1 and 10, 1 being a small amount, 10 being a large amount.
+  This value will also be leveled, meaning that whatever you type in will be
+  multiplied based on the player's current level! You can display the final
+  number by using the $VCREDITS variable.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating how many credits were taken. If yes then no
+  output will be done at all.
+
+  Usage:
+
+    ;Player is level 10: value * 25 * level, which should be 1000 credits.
+    @TAKECREDITS:4
+
+@IFCREDITS:<how many credits?>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player has at least the number of
+  specified credits on hand.
+
+  Parameter 1: The number of credits to check. This is a relative value,
+  typically between 1 and 10, 1 being a small amount, 10 being a large amount.
+  This value will also be leveled, meaning that whatever you type in will be
+  multiplied based on the player's current level!
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    ;If the player has a base of 10 credits, take them away. Player is level 10:
+    ;value * 25 * level, which should be 2500 credits.
+    @IFCREDITS:10:TAKEM
+    @GOTO:END
+    :TAKEM
+    @TAKECREDITS:10
+    :END
+
+@SETCREDITS
+
+  Description: Specifies the base credit value variable. The purpose of this
+  is to show a player what randomized amunt of credits is be BEFORE giving or
+  taking it.
+
+  Usage:
+
+    @SETCREDITS:2
+    @PROMPT:|DTSell me |LTitem #1 |DTfor |LT$VCREDITS|DE? |IN
+    @YESNO:YES:TRADE
+
+    Your loss, $GENDER!
+    @GOTO:END
+    :TRADE
+    @TAKEITEM:1:YES
+    @GIVECREDITS:2:YES
+
+    The trade is complete!
+    :END
+
+@GIVETURNS:<how many turns to give>:<suppress output?>
+
+  Description: Increase the number of turns the player has left today.
+
+  Parameter 1: The number of turns to give.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating how many turns were awarded. If yes then no
+  output will be done at all.
+
+  Usage:
+
+    You suddenly feel refreshed!
+
+    @GIVETURNS:3
+
+@TAKETURNS:<how many turns to take>:<suppress output?>
+
+  Description: Decrease the number of turns the player has left today.
+
+  Parameter 1: The number of turns to take.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating how many turns were taken. If yes then no output
+  will be done at all.
+
+  Usage:
+
+    You suddenly feel very tired!
+
+    @TAKETURNS:1
+
+@IFTURNS:<how many turns?>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player has at least the number of
+  specified turns left today.
+
+  Parameter 1: The number of turns to check.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    ;Take 3 turns, but only if the player actually has them.
+    IFTURNS:3:TAKETHOSETURNS
+    @GOTO:END
+    :TAKETHOSETURNS
+    You wake up, apparently having been unconscious for quite some time.
+
+    @TAKETURNS:3
+    :END
+
+@GIVEMEDPACKS:<how many medpacks to give>:<suppress output?>
+
+  Description: Give a player an additional medpack.
+
+  Parameter 1: The number of medpacks to give.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating how many medpacks were awarded. If yes then no
+  output will be done at all.
+
+  Usage:
+
+    You want this. You need this!
+
+    @GIVEMEDPACKS:1
+
+@TAKEMEDPACKS:<how many medpacks to take>:<suppress output?>
+
+  Description: Take a medpack from the player.
+
+  Parameter 1: The number of medpacks to take.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating how many medpacks were taken. If no (default)
+  then no output will be done at all.
+
+  Usage:
+
+    You're really hurt but you have a spare medpack. You decide to use it.
+    @NL
+    @TAKEMEDPACKS:1
+    @NL
+    @HEAL
+
+@IFMEDPACKS:<how many medpacks?>:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player has at least the number of
+  specified medpacks left.
+
+  Parameter 1: The number of medpacks to check.
+
+  Parameter 2: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFMEDPACKS:1:HEALEM
+    You're really hurt but you're all out of medpacks. Sucks to be you.
+    @GOTO:END
+    :HEALEM
+    You're really hurt but you have a spare medpack. You decide to use it.
+    @NL
+    @TAKEMEDPACKS:1
+    @NL
+    @HEAL
+    :END
+
+@HEAL:<Suppress output?>
+
+  Description: Refill the player's hit points left completely. If not hurt, the
+  command will simply not do anything.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating that the player was healed and for how much. If
+  yes then no output will be done at all.
+
+  Usage:
+
+    ;Assuming player is hurt, heal him and show him the result.
+    @HEAL
+
+@HURT:<how much damage to do>:<suppress output?>
+
+  Description: Cause damage to the player's hit points.
+
+  Parameter 1: The base number of damage do. This is a relative value,
+  typically between 1 and 10, 1 being a small amount, 10 being a large amount.
+  This value will also be leveled, meaning that whatever you type in will be
+  multiplied based on the player's current level! It will also include 50%
+  random variance. Note that the player will NEVER drop below 1 hit point
+  remaining when using this command.
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating that the player was damaged and for how much. If
+  yes then no output will be done at all.
+
+  Usage:
+
+    ;Player is level 2: (value * level / 2) + (random(value) * level / 2.) This
+    ;means the damage will be between 11 and 20.
+    The hammer is coming down, $GENDER!
+    @HURT:10
+
+@IFHURT:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player is injured.
+
+  Parameter 1: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFHURT:HEALEM
+    You're at full health.
+    @GOTO:DONE
+    :HEALEM
+    You're hurt, so ima heal ya!
+
+    @HEAL
+    :DONE
+
+@GIVENEFFECT:<negative effect to give>:<Suppress output?>
+
+  Description: Give a player a negative effect. If they already have one then
+  the command is simply ignored.
+
+  Parameter 1: The number of the negative effect to give the player. 1 based.
+  Note that the list of effects is ever changing with each release. Experiment!
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating that the player has been stricken by an neffect,
+  and which one. If yes then no output will be done at all.
+
+  Usage:
+
+    This will only hurt for a little while...
+    @NL
+    @GIVENEFFECT:2
+
+@CLEARNEFFECTS:<suppress output?>
+
+  Description: Clear a player's negative effects. If they don't have one then
+  the command is simply ignored.
+
+  Parameter 1: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating that the player has been cured and of which
+  effect. If yes then no output will be done at all.
+
+  Usage:
+
+    The power of gawd compels you!!!
+    @NL
+    @CLEARNEFFECTS
+
+@IFNEFFECT:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player currently has an active
+  negative effect.
+
+  Parameter 1: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFNEFFECT:HURT
+    You seem fine to me.
+    @GOTO:DONE
+    :HURT
+    You don't look so hot. Let me fix that!
+    @NL
+    @CLEARNEFFECTS
+    :DONE
+
+@GIVEPEFFECT:<positive effect to give>:<suppress output?>
+
+  Description: Give a player a positive effect. If they already have one then
+  the command is simply ignored.
+
+  Parameter 1: The number of the positive effect to give the player. 1 based.
+  Note that the list of effects is ever changing with each release. Experiment!
+
+  Parameter 2: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating that the player has been given a peffect, and
+  which one. If yes then no output will be done at all.
+
+  Usage:
+
+    This will only help for a little while...
+    @NL
+    @GIVEPEFFECT:2
+
+@CLEARPEFFECTS:<suppress output?>
+
+  Description: Clear a player's positive effects. If they don't have one then
+  the command is simply ignored.
+
+  Parameter 1: Suppress output? YES or NO. If no (default) a pre-defined string
+  will be displayed indicating that the player's effects have been wipe and of
+  which effect. If yes then no output will be done at all.
+
+  Usage:
+
+    Nothing lasts forever...
+    @NL
+    @CLEARPEFFECTS
+
+@IFPEFFECT:<label>
+
+  Description: Go to the specified label in the script, skipping remaining
+  lines until encountered but only if the player currently has an active
+  positive effect.
+
+  Parameter 1: User-defined label name
+
+  Error checking: Label must exist SOMEWHERE in the script.
+
+  Usage:
+
+    @IFPEFFECT:GOOD
+    You don't seem so special.
+    @GOTO:DONE
+    :GOOD
+    Wow, look at you with your fancy effect. Let me get rid of that for you!
+    @NL
+    @CLEARPEFFECTS
+    Boom, sucka!
+    :DONE
+
+Variable Reference
+---
+
+Player Variables
+--
+
+$NAME
+
+  Description: Returns the player's character name.
+
+  Note: You should probably make sure to re-specify your text color when
+  outputting a player's name, since they often contain custom colors.
+
+$CLASS
+
+  Description: Returns the name of the player character's class.
+
+$GENDER
+
+  Description: Returns the gender string defined by the @GENDER command, based
+  on the player character's gender.
+
+$CREDITS
+
+  Description: Returns the amount of credits the character has on hand.
+
+$CREDITSBANK
+
+  Description: Returns the amount of credits the character has in their bank.
+
+$HP
+
+  Description: Returns the number of hit points the character has, total.
+
+$HPLEFT
+
+  Description: Returns the number of hit points the character currently has
+  left.
+
+$MEDPACKS
+
+  Description: Returns the number of medpacks the character has, total.
+
+$MEDPACKSLEFT
+
+  Description: Returns the number of medpacks the character currently has
+  left.
+
+$TURNSLEFT
+
+  Description: Returns the number of turns the character currently has left for
+  the day.
+
+$WEAPON
+
+  Description: Returns the name of the player character's weapon.
+
+$ARMOR
+
+  Description: Returns the name of the player character's armor.
+
+$DECK
+
+  Description: Returns the name of the player character's cyberdeck.
+
+$AREA
+
+  Description: Returns the name of the area the player character is currently
+  in.
+
+
+System Variables
+--
+
+$BBS
+
+  Description: Returns the configured BBS name.
+
+$SYSOP
+
+  Description: Returns the configured SysOp name.
+
+
+Script Variables
+--
+
+$VXP
+
+  Description: Returns the amount of XP awarded or taken using the @GIVEXP
+  command.
+
+$VITEM
+
+  Description: Returns the item name awarded or taken using the @GIVEITEM and
+  @TAKEITEM commands.
+
+$VRANDOMITEM
+
+  Description: Returns the random item name awarded or taken using the
+  @GIVEITEM, @TAKEITEM, and @RANDOMITEM commands.
+
+$VCREDITS
+
+  Description: Returns the number of credits awarded or taken using the
+  @GIVECREDITS or @TAKECREDITS commands.
+
+$VRANDOM
+
+  DESCRIPTION: Returns the currently value of the random number variable,
+  usually set by the @RANDOM command.
+
+
+Color Code Reference
+---
+
+Whenever possible, script authors should use theme pipe codes in order to make
+sure their script always matches the rest of the game based on player's theme
+preferences. However, some authors may wish to have their own script-wide
+custom themes, in which specific colors and artwork would be desirable.
+
+Color Codes:
+
+         Low                             High
+   Pipe: |01 |02 |03 |04 |05 |06 |07 |08 |09 |10 |11 |12 |13 |14 |15
+ RTSoft:  `1  `2  `3  `4  `5  `6  `7  `8  `9  `0  `!  `@  `#  `$  `%
+
+Theme Color Codes:
+
+ |AL - Alert. Usually used to indicate player damage, or system errors and
+       other error conditions.
+ |DE - Decore. Used to highlight delineation in text, such as brackets and
+       colons.
+ |DI - Divider. Color used for the divider bars (such as "---" in the normal
+       Darkness theme.)
+ |DT - Dark text. The main text color.
+ |LT - Light text. Typically used for highlights in dark text. Also often used
+       to highlight when |H1 is used as the main text color of a string.
+ |H1 - Highlight 1. Typically used for important text or event text. Also used
+       to highlight when |H2 is used as the main text color of a string.
+ |H2 - Highlight 2. Typically used for less important text highlights, such as
+       menu commands.
+ |TI - Title. Used for menu titles.
+ |IN - Input. Used for user input text at prompts.
+
+Example:
+
+ |TIMenu Title
+ |DI---
+ |DE[|H1D|DE]|DTefault Item |DE[|H2O|DE]|DTther item
+
+ |LTPrompt? |IN
+
+
+Testing your script!
+---
+Since DRS scripts are tied to events in the game, testing them could be a bit
+of a challenge. Fear not! I've got you covered.
+
+Modify the @AREA command in your script to explicitly place the script into
+Area "TEST" with @AREA:TEST (@AREA:ALL won't cut it) and then add it to
+Darkness via the Darkness DRS Event Configuration screen in the configuration
+editor. Once added, you can toggle it on and off here too, if you prefer.
+
+Once in game, use the unlisted command "@" to test an TEST event from the main
+Safe Zone menu or the area exploration menu. If you have more than one event
+installed into TEST, it'll randomize which one it picks, not unlike a normal
+event outside of the Safe Zone.
+
+Remember, the game will know which area your character is in, which means that
+using the @IFAREA command might not produce the results you want if you execute
+your event from the main menu, since (for now) there are no Safe Zone related
+events. Simply temporarily modify your script to accommodate while testing this
+way.
+
+
+Tips
+---
+* The only logical control featured in DRS are the various "IF" commands. Since
+  there are no block structures outside of labels and there isn't an explicit
+  "else", structure can sometimes take some creativity. You should treat the
+  opposite boolean value of the IF commands as the "else" and you should use
+  multiple IF commands to simulate "nested if statements".
+
+* Likewise, you can simulate something like a loop structure by using recursive
+  loops and IF commands. Fun times!
+
+* Text encountered in DRS files is assumed to be pre-formatted, but if you get
+  more than a little creative with your use of color codes and variables, it is
+  best to use the @FORMAT command, which will automatically parse your string
+  and wrap it to the screen, avoiding having lines that are too long.
+
+* DRS assumes Darkness style formatting whenever possible, most notably, every
+  line begins with a space. While this is forced in commands like @FORMAT and
+  @PROMPT, even normal text is treated this way.
+
+* Likewise, optimal placing of blank lines can sometimes take a little
+  experimentation to get perfect. When in doubt, you can always use the @NL
+  command to ensure that a blank line is output.
+
+* Many commands include optional output which can be used to simplify your
+  scripts. Output strings are always formatted in the same styles as they would
+  be in other areas of Darkness. If you chose not to use them, the appropriate
+  variables are usually available to make your own!
+
+* DRS lacks a lot of commands and functionality that is considered undesired or
+  highly unusual for events. For instance, there are no commands to access
+  credits in the bank since this is not typically allowed outside of the Safe
+  Zone, and is no command to outright kill a player character. That said, if
+  there is something you're trying to do that DRS doesn't support, certainly
+  email for to see if you can get the feature(s) added to the next release!
+
+* The @IFAREA command is extremely useful for giving your script a little more
+  flavor and variety, plus you can have it run in multiple areas without
+  feeling out of place!
+
+* DRS scripts automatically start with a new line and end with a new line and a
+  pause. No need to include that tiny bit of formatting in the script itself!
+
+
+Examples:
+---
+Here are some simple snippets to get you started on basic DRS scripting!
+
+AREAS.DRS
+--
+;Example of using areas
+|DTWe're currently in |LT$AREA.
+
+@IFAREA:0:0
+@IFAREA:1:1
+@IFAREA:2:2
+@IFAREA:3:3
+@IFAREA:4:4
+@IFAREA:5:5
+@IFAREA:6:6
+
+:0
+|H1I feel pretty safe here.
+@GOTO:END
+
+:1
+|H1Hey, I can see my house from here!
+@GOTO:END
+
+:2
+|H1What a dump.
+@GOTO:END
+
+:3
+|H1If I stay down here I'm likely to be eaten by a grue.
+@GOTO:END
+
+:4
+|H1I wasn't really in the mood for a camping trip.
+@GOTO:END
+
+:5
+|HI don't like sand. It's all coarse, and rough, and irritating.
+@GOTO:END
+
+:6
+|H1Hack the planet!
+@GOTO:END
+
+:END
+
+
+NEFFECT.DRS
+--
+@CLEAR
+
+|DTI wonder if you're infected?
+
+@IFNEFFECT:HASIT
+Nope!
+
+But now you will be...
+
+@GIVENEFFECT:1
+
+@GOTO:END
+
+:HASIT
+I'm going to cure that junk!
+
+@CLEARNEFFECTS
+
+:END
+
+
+RANDOM.DRS
+--
+;Example of using randomization
+@SETRANDOM:3
+@IFRANDOM:1:ONE
+@IFRANDOM:2:TWO
+@IFRANDOM:3:THREE
+You shouldn't ever see this text!
+
+:ONE
+This is option 1.
+@GOTO:END
+
+:TWO
+This is option 2.
+@GOTO:END
+
+:THREE
+This is option 3.
+@GOTO:END
+
+:END
+@NL
+@PAUSE
+;Let's destroy the pause prompt and continue where we left off.
+@UP:1
+@CLEAREOL
+@X:1
+Thanks for participating!
+
+
+GIFTS.DRS
+--
+@CLEAR
+
+|DTI'm going to give you some XP...
+
+@GIVEXP:3
+
+|DTThat should have been awarded |LT$VXP XP |DTor so.
+
+@PAUSE
+
+|DTI'm going to give you an item...
+
+@GIVEITEM:0
+
+|DTThat should have been awarded |LT$VITEM|DT.
+
+@PAUSE
+
+|DTI'm going to give you some credits...
+
+@GIVECREDITS:5
+
+|DTThat should have been awarded |LT$VCREDITS credits|DT.
+
+
+ITEMCHECK.DRS
+--
+@CLEAR
+
+|DTI'm going to take an item...
+
+@TAKEITEM:3:True
+
+@IFITEM:3:HASIT
+Item doesn't exist!
+
+@GOTO:END
+:HASIT
+Item still exists!
+
+:END
+
+
+HURTHEAL.DRS
+--
+@CLEAR
+
+|DTI'm going to take some HP...
+
+@IFHURT:HEALHIM
+You're fine!
+
+:HURTHIM
+@DAMAGE:5
+@GOTO:END
+
+:HEALHIM
+@HEAL
+
+:END
+
+Also be sure to look for any .DRS files included in the install of Darkness
+itself. More are being included with each new release!
+
+
+Closing
+---
+As of the initial Darkness 2.0.0 release, DRS is a work in progress and may end
+up seeing significant development in future version. I'll endeavour to keep
+future versions backwards compatible or at least include script conversion in
+version upgrade utilities if any syntax changes do take place. If you have
+ideas for future features, or if you run into any major bugs or other issues
+while developing your script, please contact me!
+
+Speaking of which, have you developed a cool DRS event that you'd like included
+with Darkness? Drop me a line and let me know about it!
+
+darkness@demonic.net
+
+---
+EOF

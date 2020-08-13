@@ -1,0 +1,39 @@
+    __,---,____,---,____         ,---,____,---,____                  ,---,____
+    \                  /---,____/    /            /---,____,---,____/        /
+ ////    /        /            /      --/    /   /    ____              /___/
+   /    /                 / __     /        /        __/_/    /___/----,   ////
+  /___     /___ /        ,   /___ /   /___ /        /   /----,   /___ /   _\
+      `---'    `---/___ /   /    `---'    `---/___     ____ /   _\   `---'
+                       `---'                      `---'    `---'
+Registering Darkness
+---
+Darkness is not crippled, therefore registering is not required in any way,
+shape or form. Registering simply changes the "unregistered" text to display
+that the game has been "registered" to the SysOp and BBS name provided during
+the registration process.
+
+Darkness is "emailware" - registering requires you to send an email requesting
+a registering code. You need to include the following information:
+
+* Your BBS Name
+* The SysOp Name (Can be real OR an alias)
+
+Optionally, you can also include:
+
+* Your physical location
+* Your BBS's telnet/ssh address and/or phone number
+* Anything else you feel like including - say hello, give feedback on the game,
+  suggest new features, etc.!
+
+Email your request to "darkness@demonic.net". You will receive a response with
+your registration code sent to the address you emailed from.
+
+The data provided during registration is use for my personal use, mostly to
+monitor the number of users and systems running Darkness. This information
+will not be published, sold, or shared for any other purpose.
+
+If/when Darkness support is dropped, either a version will be released without
+registration checking *OR* a registration code generator will be released.
+
+---
+EOF

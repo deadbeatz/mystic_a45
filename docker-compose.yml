@@ -26,4 +26,5 @@ services:
     tty: true        # docker run -t
     volumes:
       - ./mystic_a45:/mystic
+      - ./dosemu:/home/${USER}/.dosemu
     restart: always

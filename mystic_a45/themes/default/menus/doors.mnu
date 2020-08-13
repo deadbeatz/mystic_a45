@@ -41,7 +41,7 @@ blackjack
 0
 
 
-|09(|101|09) |03Example Door 1
+|09(|101|09) |03Darkness
 
 
 1
@@ -64,9 +64,9 @@ blackjack
 0
 0
 1
-DC
+DD
 
-c:\bbs\mydoor\mydoor.bat
+./rundoor.sh %3 dark
 0
 
 

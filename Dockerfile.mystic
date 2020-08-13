@@ -39,14 +39,18 @@ RUN useradd -s /bin/bash -m ${USER}
 RUN echo "${USER} ALL=(ALL) NOPASSWD: /mystic/mis" >> /etc/sudoers
 RUN mkdir /mystic
 RUN chown ${USER}:${USER} /mystic
-WORKDIR /mystic
 RUN pip install --upgrade pip
 
+COPY --chown=$USER:$USER ./setup/runBBS.sh /home/$USER/
+COPY --chown=$USER:$USER ./setup/rundoor.sh /home/$USER/
+RUN chmod +x  /home/$USER/runBBS.sh
+
 USER ${USER}
+WORKDIR /home/$USER
 
 # For local pip packages
 ENV PATH=$PATH:/mystic/.local/bin
 
 RUN echo "alias ll=ls\ -all" >> ~/.bashrc
-RUN ls -all
+
 ENTRYPOINT ["./runBBS.sh"]
