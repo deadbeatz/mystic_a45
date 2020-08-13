@@ -36,22 +36,13 @@ run_batch(){
 }
 
 case "$DOOR" in
-    arrbdg1)
+    dark)
         echo -e '\r@echo off \r' > $DROOT/$FILE
         echo -e 'c: \r' >> $DROOT/$FILE
-        echo -e 'cd c:\\doors\\arrbdg1\\ \r' >> $DROOT/$FILE
-        echo -e 'abridge /NODE'$1' /Pc:\\nodes\\temp'$1' \r' >> $DROOT/$FILE
+        echo -e 'cd c:\\doors\\darkness\\ \r' >> $DROOT/$FILE
+        echo -e 'dark16 /n'$1' \r' >> $DROOT/$FILE
+        echo -e 'c:\\sleep 3 \r' >> $DROOT/$FILE
         echo -e 'exitemu' >> $DROOT/$FILE
-        unix2dos $DROOT/$FILE 2>/dev/null
-        run_batch $1 $FILE $DROOT
-        ;;
-
-    bre)
-        echo -e '\r@echo off \r' > $DROOT/$FILE
-        echo -e 'c: \r' >> $DROOT/$FILE
-        echo -e 'cd c:\\doors\\bre\\ \r' >> $DROOT/$FILE
-        echo -e 'bre.bat '$1' \r' >> $DROOT/$FILE
-        echo -e 'exitemu' >> $DROOT/$FILE 
         unix2dos $DROOT/$FILE 2>/dev/null
         run_batch $1 $FILE $DROOT
         ;;
