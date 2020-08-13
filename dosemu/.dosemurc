@@ -1,0 +1,11 @@
+$_cpu = "80486"                 
+$_cpu_emu = "vm86"              
+$_hogthreshold = (10)           
+$_external_char_set = "cp437"    
+$_internal_char_set = "cp437"   
+$_layout = "us"                 
+$_rawkeyboard = (0)             
+$_joy_device = ""               
+$_speaker = ""                  
+$_sound = (off)
+$_com1 = "virtual"
