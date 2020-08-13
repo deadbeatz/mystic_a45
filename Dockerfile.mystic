@@ -1,0 +1,52 @@
+FROM python:2.7.18.shared
+ARG USER
+RUN apt-get update -y 
+RUN apt-get install -y wget\
+  ca-certificates\
+  zip\
+  unzip\
+  tar\
+  rar\
+  unrar\
+  dos2unix\
+  telnet\
+  sudo\
+  vim\
+	nodejs
+
+COPY libcl.so.3.4.4 /usr/lib/
+RUN ln -s /usr/lib/libcl.so.3.4.4 /usr/lib/libcl.so
+
+# Set timezone
+ENV TZ=America/Denver
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN dpkg-reconfigure -f noninteractive tzdata
+
+# Unset python path for installing software-properties-common since it
+# users Python3.
+ENV PYTHONPATH=""
+# Setup Dosemu2 (NEW)
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:dosemu2/ppa
+RUN apt-get update -y
+RUN apt-get install dosemu2 -y
+
+# Reset python path for 2.7
+ENV PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/:/usr/lib/python2.7/dist-packages/:/usr/local/lib/python2.7/dist-packages/
+
+# Add sysop user and setup sudo access for MIS
+RUN useradd -s /bin/bash -m ${USER}
+RUN echo "${USER} ALL=(ALL) NOPASSWD: /mystic/mis" >> /etc/sudoers
+RUN mkdir /mystic
+RUN chown ${USER}:${USER} /mystic
+WORKDIR /mystic
+RUN pip install --upgrade pip
+
+USER ${USER}
+
+# For local pip packages
+ENV PATH=$PATH:/mystic/.local/bin
+
+RUN echo "alias ll=ls\ -all" >> ~/.bashrc
+RUN ls -all
+ENTRYPOINT ["./runBBS.sh"]

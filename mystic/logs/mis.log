@@ -1,0 +1,63 @@
+
+---------------------  Mystic v1.12 A45 2020/02/18 Wed, Aug 12 2020 (loglevel 2)
++ 2020.08.12 22:25:12  MANAGER Starting event system
++ 2020.08.12 22:25:12  MANAGER Starting 1 server(s)
++ 2020.08.12 22:25:12  TELNET Unable to open IPV4 port: Error -1 (13)
++ 2020.08.12 22:25:12  TELNET Unable to open IPV6 port: Error -1 (13)
++ 2020.08.12 22:25:12  EVENT Starting 0 event(s)
++ 2020.08.12 22:25:33  MANAGER Server shutdown received from console
++ 2020.08.12 22:25:33  MANAGER Shutdown: EVENT
++ 2020.08.12 22:25:33  MANAGER Shutdown: TELNET
++ 2020.08.12 22:25:33  MANAGER Waiting for servers to stop (up to 30 seconds)
++ 2020.08.12 22:25:34  EVENT Event system stopped
++ 2020.08.12 22:25:34  MANAGER Shutdown complete
+
+---------------------  Mystic v1.12 A45 2020/02/18 Wed, Aug 12 2020 (loglevel 2)
++ 2020.08.12 22:25:37  MANAGER Starting event system
++ 2020.08.12 22:25:37  MANAGER Starting 1 server(s)
++ 2020.08.12 22:25:37  TELNET Unable to open IPV4 port: Error -1 (13)
++ 2020.08.12 22:25:37  TELNET Unable to open IPV6 port: Error -1 (13)
++ 2020.08.12 22:25:37  EVENT Starting 0 event(s)
++ 2020.08.12 22:26:44  MANAGER Shutdown signal received from OS
++ 2020.08.12 22:26:44  MANAGER Shutdown: EVENT
++ 2020.08.12 22:26:44  MANAGER Shutdown: TELNET
++ 2020.08.12 22:26:44  MANAGER Waiting for servers to stop (up to 30 seconds)
++ 2020.08.12 22:26:44  EVENT Event system stopped
++ 2020.08.12 22:26:44  MANAGER Shutdown complete
+
+---------------------  Mystic v1.12 A45 2020/02/18 Wed, Aug 12 2020 (loglevel 2)
++ 2020.08.12 22:27:11  MANAGER Starting event system
++ 2020.08.12 22:27:11  MANAGER Starting 1 server(s)
++ 2020.08.12 22:27:11  TELNET Listening on IPV4 port 23 using interface "0.0.0.0"
++ 2020.08.12 22:27:11  TELNET Listening on IPV6 port 23 using interface "::"
++ 2020.08.12 22:27:11  EVENT Starting 0 event(s)
++ 2020.08.12 22:30:13  MANAGER Shutdown signal received from OS
++ 2020.08.12 22:30:13  MANAGER Shutdown: EVENT
++ 2020.08.12 22:30:13  MANAGER Shutdown: TELNET
++ 2020.08.12 22:30:13  MANAGER Waiting for servers to stop (up to 30 seconds)
++ 2020.08.12 22:30:14  EVENT Event system stopped
++ 2020.08.12 22:30:14  MANAGER Shutdown complete
+
+---------------------  Mystic v1.12 A45 2020/02/18 Wed, Aug 12 2020 (loglevel 2)
++ 2020.08.12 22:30:17  MANAGER Starting event system
++ 2020.08.12 22:30:17  MANAGER Starting 1 server(s)
++ 2020.08.12 22:30:17  TELNET Listening on IPV4 port 23 using interface "0.0.0.0"
++ 2020.08.12 22:30:17  TELNET Listening on IPV6 port 23 using interface "::"
++ 2020.08.12 22:30:17  EVENT Starting 0 event(s)
++ 2020.08.12 22:30:23  MANAGER Shutdown signal received from OS
++ 2020.08.12 22:30:23  MANAGER Shutdown: EVENT
++ 2020.08.12 22:30:23  MANAGER Shutdown: TELNET
++ 2020.08.12 22:30:23  MANAGER Waiting for servers to stop (up to 30 seconds)
+
+---------------------  Mystic v1.12 A45 2020/02/18 Wed, Aug 12 2020 (loglevel 2)
++ 2020.08.12 22:33:24  MANAGER Starting event system
++ 2020.08.12 22:33:24  MANAGER Starting 1 server(s)
++ 2020.08.12 22:33:24  TELNET Listening on IPV4 port 23 using interface "0.0.0.0"
++ 2020.08.12 22:33:24  TELNET Listening on IPV6 port 23 using interface "::"
++ 2020.08.12 22:33:24  EVENT Starting 0 event(s)
++ 2020.08.12 22:34:55  MANAGER Shutdown signal received from OS
++ 2020.08.12 22:34:55  MANAGER Shutdown: EVENT
++ 2020.08.12 22:34:55  MANAGER Shutdown: TELNET
++ 2020.08.12 22:34:55  MANAGER Waiting for servers to stop (up to 30 seconds)
++ 2020.08.12 22:34:55  EVENT Event system stopped
++ 2020.08.12 22:34:56  MANAGER Shutdown complete

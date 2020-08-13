@@ -1,0 +1,12 @@
+; FTN Network Domains
+; <zone>,<domain>,<network join server>
+1,fidonet
+2,fidonet
+3,fidonet
+4,fidonet
+5,fidonet
+6,fidonet
+10,araknet
+21,fsxnet
+46,agoranet
+911,zeronet
