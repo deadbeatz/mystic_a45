@@ -1,4 +1,3 @@
 *.bsy
 *.log
-mis.log
-mystic_a45/logs/mis.log
+*.log*

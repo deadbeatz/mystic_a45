@@ -1,0 +1,780 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   X00 Utility (XU)
+
+                         Copyright 1990,  by Raymond L. Gwinn
+                                 12469 Cavalier Drive
+                              Woodbridge, Virginia 22192
+
+                                 All Rights Reserved
+
+
+
+
+
+
+
+                                                                          i
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     INTRODUCTION
+
+          XU  is  a   utility  program  intended  to  support   the  Serial
+          Input/Output (SIO) device driver X00.
+
+          XU  combines  several individual  utilities that  were previously
+          distributed  with X00.  XU  gives the user  the ability to change
+          most of the X00 command line  options that were specified in  the
+          CONFIG.SYS file,  or when  X00 was  installed as  a TSR.   Future
+          versions of XU will provide additional functions such as port/IRQ
+          re-mapping.
+
+          Use this program at your  own risk.  No warranties  or guarantees
+          are given or implied.
+
+          You  may  enter as  many  commands as  you  wish in  a  single XU
+          execution.   The  only limitation  is the  length of  DOS command
+          lines.
+
+          All references in this manual to the 16550A apply to the 16550AF,
+          16550AFN,  16C551 aka  16551,  and 16C552  aka  16552.   See  the
+          appendix  in X00USER.DOC  for a  discussion on  the  various chip
+          types.
+
+
+
+
+
+
+
+                                                                         ii
+
+                                  TABLE OF CONTENTS
+
+
+          INTRODUCTION  . . . . . . . . . . . . . . . . . . . . . . . .   i
+
+          BOOT  . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+          CAPTURE . . . . . . . . . . . . . . . . . . . . . . . . . . .   2
+
+          FIFO  . . . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+
+          DTR . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+
+          DV  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   5
+
+          LOCK  . . . . . . . . . . . . . . . . . . . . . . . . . . . .   6
+               Valid baud rates . . . . . . . . . . . . . . . . . . . .   6
+               Valid parity . . . . . . . . . . . . . . . . . . . . . .   6
+               data bits per character  . . . . . . . . . . . . . . . .   6
+               stop bits  . . . . . . . . . . . . . . . . . . . . . . .   7
+
+          NASTY . . . . . . . . . . . . . . . . . . . . . . . . . . . .   8
+
+          PORT  . . . . . . . . . . . . . . . . . . . . . . . . . . . .   9
+
+          SET . . . . . . . . . . . . . . . . . . . . . . . . . . . .    10
+
+          STATUS or S . . . . . . . . . . . . . . . . . . . . . . . .    11
+
+          USEBIOS . . . . . . . . . . . . . . . . . . . . . . . . . .    12
+
+          WATCHCD . . . . . . . . . . . . . . . . . . . . . . . . . .    13
+
+
+
+
+
+
+
+                                                                          1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         BOOT
+
+          This function should cause a warm boot.  The BOOT functions works
+          in  most environments, including  DESQview on most  systems.  The
+          BOOT function will not work on some 386 systems running protected
+          mode software.
+
+          An example of the usage is:
+
+                                       XU BOOT
+
+          One appropriate place  to use this  function is  in a batch  file
+          that  is controlling  an  automated system  like  a  BBS.   If  a
+          condition is detected that is considered by the user to be severe
+          enough, the BOOT command can be issued to restart the system.
+
+
+
+
+
+
+
+                                                                          2
+
+
+
+
+                                       CAPTURE
+
+          X00 is a  FOSSIL serial I/O device driver.   A FOSSIL is normally
+          entered (called)  using an 80x86  INT 14h.   This means  that the
+          vector  (pointer)  for interrupt  14h must  point  to X00.   Some
+          programs will alter the  interrupt 14h vector (pointer).   If the
+          INT 14h vector is changed, X00 may not function properly.
+
+          Application  programmers please note that the  INT 14h vector can
+          be  avoided  by using  the HLLAPI  routines  included in  the X00
+          distribution file.
+
+          The  CAPTURE function is provided to instruct X00 to take control
+          of, or to release the INT 14h vector.
+
+          Examples of usage are:
+
+                                   XU CAPTURE:ON
+
+                                   XU CAPTURE:OFF
+
+                                   XU CAPTURE
+
+          CAPTURE:ON  means  that  X00  will take/re-take  the  vector  for
+          interrupt  14h.   That  is,  X00  will make  the  INT 14h  vector
+          (pointer) point to the X00 function dispatcher.  The value of the
+          old INT  14h vector  is saved.   X00  does not save  the INT  14h
+          vector if it already points to X00.
+
+          CAPTURE:OFF  means that  X00 is  to release  the INT  14h vector.
+          When X00 is initialized,  or when a CAPTURE:ON is issued, the INT
+          14h  vector  is saved.   The  CAPTURE:OFF  function tells  X00 to
+          restore the  last INT  14h vector  that it saved.   It  should be
+          noted  that the  last  INT  14h  vector that  X00  saved  is  not
+          necessary the correct vector.  An explanation is beyond the scope
+          of  this  document.    CAPTURE:OFF  will  also  disable the  BIOS
+          emulator.   CAPTURE:OFF  does  not deactivate  any FOSSIL  active
+          ports.
+
+          If  you  are having  problems with  a  FOSSIL aware  program, try
+          CAPTURE:ON  just  prior to  executing the  program.   If  you are
+          having problems  with a communications program that is not FOSSIL
+          aware, try CAPTURE:OFF just prior to executing the program.
+
+          This function takes effect immediately upon execution.
+
+
+
+
+
+
+
+                                                                          3
+
+
+
+
+
+
+                                         FIFO
+
+          This function is  provided to give the  user control of FIFOs  in
+          the  SIO  chip.   At  this  time the  only  FIFOed  chip that  is
+          supported is the 16550A  and later versions.  Other  FIFOed chips
+          are being worked on and will be supported in the future.
+
+          Some early PS/2  systems had 16550 (non A) chips  installed.  X00
+          will identify the non A versions (and tell you that you have one)
+          but it will  not use the FIFOs.   The FIFOs of the  16550 (non A)
+          are not reliable.
+
+          If  the SIO  chip is  not a  FIFOed device,  this command  has no
+          effect.
+
+          Examples of usage are:
+
+                                   XU FIFO:15
+
+                                   XU FIFO:8
+
+                                   XU FIFO:OFF
+
+          X00  defaults to  8 for a  16550A.   If an invalid  FIFO value is
+          specified, the default value will be substituted.
+
+          When  a number  parameter is  given, it  specifies the  number of
+          characters that can be loaded  into the transmit FIFO of  the SIO
+          chip.  The receive FIFO is always set at the maximum.
+
+          The  FIFO:OFF  command disables  both  the  receive and  transmit
+          FIFOs.
+
+          I have seen problems with the 16550A when the  FIFO is set to the
+          maximum of 16.   The problems go away with the FIFO  value set to
+          15.  If you are seeing an occasional error during file transfers,
+          try lowering the FIFO value.
+
+          This  command will  not take  effect for  ports that  are already
+          FOSSIL  active.  Once the port is reactivated, the specified FIFO
+          parameters will take effect.
+
+
+
+
+
+
+
+                                                                          4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         DTR
+
+          This function is provided to turn on  and or off DTR for a  given
+          port.
+
+          Examples of usage are:
+
+                                   XU DTR:0:ON
+                                   XU DTR:0:OFF
+                                   XU DTR:0:OFF DTR:0:ON
+
+          In the third  example note that DTR is first  turned off and then
+          back  on in the  same execution of  XU.  Some  modems may require
+          that  DTR  be  off  for  a  given  period  of  time  before being
+          recognized as  a valid off.  If this  is the case for your modem,
+          turning DTR off, then on in the same execution may not work.
+
+
+
+
+
+
+
+                                                                          5
+
+
+
+
+
+
+
+
+
+
+                                          DV
+
+          This  function  is provided  to  support  software running  under
+          DESQview.  Normally DESQview will provide a  full time slice to a
+          program whether it is doing anything productive or not.  However,
+          DESQview provides a method,  called PAUSE, that allows  a program
+          to end its current time slice.
+
+          Examples of usage are:
+
+                                   XU DV:ON
+
+                                   XU DV:OFF
+
+          When the DV option is enabled (DV:ON) X00 will make a guess as to
+          whether  the program is doing anything  productive.  For example,
+          if the program is simply waiting for the next character and there
+          is no character  available, then  time can be  made available  to
+          another program running under DESQview.   DV:OFF will disable the
+          releasing of time to other programs.
+
+          As stated  above, X00  tries  to guess  if the  program is  doing
+          something productive.  In some cases for some programs, the guess
+          is  going to be wrong.  That  is, X00 will incorrectly assume the
+          program is, in effect, idle when it  is not.  In such cases, your
+          application program may  slow down considerably.  The  only thing
+          you can do to correct this is to issue a DV:OFF command.
+
+          As time goes on, I believe X00's guesses will get better.  So, if
+          you  have problems with DV:ON, try it  again with new releases of
+          X00.
+
+          This function takes effect immediately upon execution.
+
+
+
+
+
+
+
+                                                                          6
+
+
+
+
+                                         LOCK
+
+          Some modems allow  or require a fixed baud rate from the computer
+          to the modem.  This function is intended to support those modems.
+          Note  that  LOCK does  not set  the  specified parameters  in the
+          hardware  when   issued.    See  the  following  SET  command  to
+          immediately set the operational characteristics  of a port.  This
+          function locks  the operational  characteristics only for  FOSSIL
+          aware programs  and programs using  the BIOS emulator.   Programs
+          that  perform direct I/O to  the serial I/O  registers can change
+          the operational characteristics.
+
+          Examples of usage are:
+
+                                   XU LOCK:0:19200
+
+                                   XU LOCK:0:19200:8N1
+
+                                   XU LOCK:0:OFF
+
+                                   XU LOCK:0:7E1
+
+                                   XU LOCK:0:OFF:7S1
+
+          The command  LOCK:0:19200 will cause  the computer to  modem baud
+          rate (for logical port 0, usually COM1) to be 19200  baud even if
+          the application program requests that the baud rate be changed to
+          another value.  RTS/CTS  hardware handshaking is implied (forced)
+          when a locked baud rate is specified.
+
+          Valid baud rates for  locking are: 75, 110, 134.5, 150, 300, 600,
+          1200,  1800, 2000,  2400, 3600, 4800,  7200, 9600,  19200, 28800,
+          38400, 57600, and 115200.
+
+          Valid  parity etc settings can  be made up  of any combination of
+          the following first second and third characters.
+
+                    First     Second    Third
+                      5         N         1
+                      6         E         2
+                      7         M
+                      8         O
+                                S
+
+          The first number specifies the number of data bits per character.
+
+
+
+
+
+
+
+                                                                          7
+
+
+          The second character specifies the parity as follows:
+
+               N = None
+               E = Even
+               M = Mark (always 1)
+               O = Odd
+               S = Space (always 0)
+
+          The third character specifies  the number of  stop bits, 1 or  2.
+          If 5 data bits are specified, 2 really means 1.5 stop bits.
+
+          The  command LOCK:0:OFF turns the  locking off for  both baud and
+          parity for port 0 off.  Request from  the application program for
+          baud rate changes will be honored.
+
+          If the indicated port (0 in the above examples) is FOSSIL active,
+          the locking or  unlocking will not take effect until  the port is
+          reactivated.
+
+          Note that a single OFF parameter ie XU LOCK:0:OFF will reset  all
+          locked parameters on the specified port.  If you wish to turn off
+          only one of the locked parameters, use a command similar to this:
+          XU LOCK:0:19200:OFF
+
+
+
+
+
+
+
+                                                                          8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        NASTY
+
+          This  function is not very nice to  other programs.  It will also
+          slow down processing when it is  in effect.  NASTY should only be
+          turned on if you can not get your program to work any other  way.
+          There is  also a good chance  that this option will  lock up your
+          system randomly.
+
+          This option will cause  X00 to alter memory of programs that have
+          taken interrupt vectors  away from X00.  This may  allow the user
+          to achieve desired results in a hostile program environment.
+
+          Examples of usage are:
+
+                                   XU NASTY:ON
+
+                                   XU NASTY:OFF
+
+          Again, use this function only if it is absolutely necessary.  The
+          potential for subtle and major problems is not worth it if you do
+          not need the NASTY feature.
+
+          This function takes effect immediately upon execution.
+
+
+
+
+
+
+
+                                                                          9
+
+
+
+
+
+
+
+                                         PORT
+
+          This function  allows the user  to make a  port FOSSIL  active or
+          inactive.    This  function  is provided  to  (attempt  to)  make
+          programs that are not FOSSIL  aware use the FOSSIL.   Thus, these
+          programs gain the advantages of interrupt driven serial I/O.
+
+          Examples of usage are:
+
+                                   XU PORT:0:ON
+
+                                   XU PORT:0:OFF
+
+          The command PORT:0:ON  will make  the indicated port  (0 in  this
+          case)  FOSSIL active.  This means that interrupts will be enabled
+          for the port and I/O will be buffered.
+
+          The command PORT:0:OFF will restore  the indicated port to normal
+          operation.   The  OFF command  is also  useful for  poorly tested
+          programs  that unintentionally  leaves the  FOSSIL hot  when they
+          terminate.
+
+          Several of  the alpha testers of  XU seemed compelled to  issue a
+          PORT:0:ON  command prior to running a  FOSSIL aware program, like
+          BINKLEY or OPUS, with mixed results.  There is no need to turn on
+          the  port  for  FOSSIL aware  programs.   In  fact  it  may cause
+          problems if you do.
+
+          You should  not use XU to  activate or deactivate a  port that is
+          currently being used by a program.  For example, do not use XU in
+          one  DESQview window  to activate  or deactivate  a port  that is
+          being  used by a program in another window.  Random problems will
+          result if you do.
+
+          Remember,  this function is intended to get programs that are NOT
+          FOSSIL  aware to  use  the FOSSIL.    You must  not activate  and
+          deactivate ports for FOSSIL aware programs.
+
+          This function takes effect immediately upon execution.
+
+
+
+
+
+
+
+                                                                         10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         SET
+
+          The syntax for  the SET command is identical  to the LOCK command
+          above.   This command is  use to immediately  set the operational
+          characteristics of a serial I/O port.  This command does not lock
+          the settings.  An application program using INT 14h is allowed to
+          change the operational characteristics.
+
+          Examples of usage are:
+
+                                   XU SET:0:19200
+
+                                   XU SET:1:1200:8N2
+
+                                   XU SET:0:115200
+
+
+
+
+
+
+
+                                                                         11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     STATUS or S
+
+          This command will display the current operational characteristics
+          of X00 and the serial I/O ports that X00 knows about.
+           
+
+
+
+
+
+
+
+                                                                         12
+
+
+
+
+
+
+
+
+                                       USEBIOS
+
+          This function is  provided to maintain  compatibility with  older
+          versions of X00.
+
+          Out of self  defense, I found it necessary to  include a BIOS INT
+          14h emulator  in X00.   The emulator processes  INT 14h  calls to
+          serial  I/O  ports that  are not  FOSSIL  active.   This function
+          allows the user to enable and disable the emulator.
+
+          Examples of usage are:
+
+                                   XU USEBIOS:ON
+
+                                   XU USEBIOS:OFF
+
+          The USEBIOS:ON command  tells X00 to pass  calls to the BIOS  INT
+          14h processor.  That is, it disables the X00 BIOS emulator.
+
+          The  USEBIOS:OFF command tells X00  to use the  BIOS emulator for
+          INT 14h calls to FOSSIL inactive  ports.  That is, it enables the
+          X00 BIOS emulator.
+
+          Many  DOOR  type  programs would  not  work  with  X00 until  the
+          emulator was added.  By default, X00 uses the emulator.
+
+          If a  program normally uses  BIOS INT 14h  (and it will  not work
+          with a FOSSIL),  you will probably see improved  performance when
+          the  BIOS emulator  is  used.   Especially if  you have  a 16550A
+          installed.
+
+          The  emulator provides X00 with  a fixed frame  of reference with
+          respect to the serial I/O ports.   The emulator should be enabled
+          (default or USEBIOS:OFF) for the vast majority of programs.
+
+          This function takes effect immediately upon execution.
+
+
+
+
+
+
+
+                                                                         13
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                       WATCHCD
+
+          This  function is  provided to  enable and  disable a  monitor of
+          carrier detect.
+
+          A description for  the need of this function  is beyond the scope
+          of this document.  The reason is obvious to those who need it.
+
+          Examples of usage are:
+
+                                   XU WATCHCD:0:ON
+
+                                   XU WATCHCD:0:OFF
+
+          The WATCHCD:0:ON command enables the monitor.  If carrier for the
+          specified  port (0 in the  above examples) goes  away, the system
+          will be booted.
+
+          The WATCHCD:0:OFF command disables the monitor.
+
+          This function takes effect immediately upon execution.
+
+
+
+
+
+
+
+                                                                         14
+
+                                        INDEX
+
+          16550 (non A) . . . . . . . . . . . . . . . . . . . . . . . . . 3
+          16550A  . . . . . . . . . . . . . . . . . . . . . . . .  i, 3, 12
+          16550AF . . . . . . . . . . . . . . . . . . . . . . . . . . . . i
+          16550AFN  . . . . . . . . . . . . . . . . . . . . . . . . . . . i
+          16C551 aka 16551  . . . . . . . . . . . . . . . . . . . . . . . i
+          16C552 aka 16552  . . . . . . . . . . . . . . . . . . . . . . . i
+          BOOT  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          CAPTURE . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+          Data bits per character . . . . . . . . . . . . . . . . . . . . 6
+          DTR . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+          DV  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+          FIFO  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+          FOSSIL  . . . . . . . . . . . . . . . . . . . . 2, 3, 6, 7, 9, 12
+          INTRODUCTION  . . . . . . . . . . . . . . . . . . . . . . . . . i
+          LOCK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+               data bits per character  . . . . . . . . . . . . . . . . . 6
+               parity . . . . . . . . . . . . . . . . . . . . . . . .  6, 7
+               stop bits  . . . . . . . . . . . . . . . . . . . . . . . . 7
+               Valid baud rates . . . . . . . . . . . . . . . . . . . . . 6
+          NASTY . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          Parity  . . . . . . . . . . . . . . . . . . . . . . . . . .  6, 7
+          PORT  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+          RTS/CTS hardware handshaking  . . . . . . . . . . . . . . . . . 6
+          SET . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+          STATUS or S . . . . . . . . . . . . . . . . . . . . . . . . .  11
+          Stop bits . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+          TABLE OF CONTENTS . . . . . . . . . . . . . . . . . . . . . .  ii
+          USEBIOS . . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+          WATCHCD . . . . . . . . . . . . . . . . . . . . . . . . . . .  13
+

@@ -1,0 +1,1402 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     USERS MANUAL
+
+                  X.00 A Low Level Serial I/O Communications Driver
+                        for MS DOS and like Operating Systems.
+
+                        Copyright (c) 1993 by Raymond L. Gwinn
+                                 12469 Cavalier Drive
+                              Woodbridge, Virginia 22192
+                                 All Rights Reserved
+
+                                     May 22, 1993
+
+
+                     Fidonet address 1:265/104 (Routed mail only)
+                                 Compuserve 72570,157
+                          Internet 72570.157@Compuserve.com
+                                  Data 703-494-0098
+                                   FAX 703-494-0595
+
+
+
+
+
+
+
+                                                                          i
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     INTRODUCTION
+
+          Previously,  the documentation  for X00  was little  more  than a
+          collection of notes.  The notes were added  to as the development
+          process continued and enhancements were made.  I honestly did not
+          suspect  that X00  would become as  widely used  as it  is.  This
+          manual is an attempt at some decent documentation for X00.
+
+          But who  do I document  for?  The user  that is setting  up a BBS
+          just wants to get X00 installed  and to move on to more important
+          things.  The user that is having problems needs information about
+          serial  I/O communications  in general  and the  PC specifically.
+          The application developer (programmer) needs detailed information
+          about each individual function and the information generated.
+
+          This manual is intended for the X00 user.  A separate Application
+          Programmers manual is being written.
+
+          This manual and the software distributed with it is provided with
+          no guarantees.  Use at your own risk.
+
+
+
+
+
+
+
+                                                                         ii
+
+                                  TABLE OF CONTENTS
+
+
+          WHAT IS X00 . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+          Warranty  . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+          Licensing Information . . . . . . . . . . . . . . . . . . . .   2
+               Non-Commercial License . . . . . . . . . . . . . . . . .   2
+               Commercial License . . . . . . . . . . . . . . . . . . .   2
+               Commercial license fasttrack . . . . . . . . . . . . . .   4
+
+          GETTING STARTED . . . . . . . . . . . . . . . . . . . . . . .   5
+               Installing X00 . . . . . . . . . . . . . . . . . . . . .   5
+               Quick Start  . . . . . . . . . . . . . . . . . . . . . .   5
+
+          OVERVIEW OF X00 USAGE . . . . . . . . . . . . . . . . . . . .   6
+               General Information  . . . . . . . . . . . . . . . . . .   6
+                    X00 loaded as a DOS Device Driver . . . . . . . . .   6
+                    X00 loaded as a TSR . . . . . . . . . . . . . . . .   6
+                    COMn and PORTn  . . . . . . . . . . . . . . . . . .   6
+
+          COMMAND LINE OPTIONS  . . . . . . . . . . . . . . . . . . . .   7
+               Specifying number of ports . . . . . . . . . . . . . . .   7
+               B option, Locking Baud, Data, Parity and Stop bits . . .   7
+               Valid locked baud rates  . . . . . . . . . . . . . . . .   8
+               Eliminate  . . . . . . . . . . . . . . . . . . . . . . .   8
+               Defer  . . . . . . . . . . . . . . . . . . . . . . . . .   8
+               DV . . . . . . . . . . . . . . . . . . . . . . . . . . .   9
+               FIFO . . . . . . . . . . . . . . . . . . . . . . . . . .   9
+               NOFIFO . . . . . . . . . . . . . . . . . . . . . . . .    10
+               NOPOST . . . . . . . . . . . . . . . . . . . . . . . .    10
+               R, Set Receive Buffer Size . . . . . . . . . . . . . .    10
+               T, Set Transmit Buffer Size  . . . . . . . . . . . . .    11
+               VP or Master Interrupt Enable  . . . . . . . . . . . .    11
+               Mapping port assignments . . . . . . . . . . . . . . .    11
+               Un-installing X00  . . . . . . . . . . . . . . . . . .    12
+
+          Multi-Tasking . . . . . . . . . . . . . . . . . . . . . . .    13
+
+          THE BIOS INT 14h EMULATOR . . . . . . . . . . . . . . . . .    15
+
+          IRQ SHARING . . . . . . . . . . . . . . . . . . . . . . . .    16
+
+          Appendix A, Hardware Port and IRQ Assignments . . . . . . .    17
+               Addresses and IRQs for COM1 and COM2 . . . . . . . . .    17
+               Defacto standard for COM3 and COM4 . . . . . . . . . .    17
+               Addresses and IRQ for COM3 through COM8 on the PS/2  .    17
+
+          Appendix B, SIO Chips . . . . . . . . . . . . . . . . . . .    18
+               8250 . . . . . . . . . . . . . . . . . . . . . . . . .    18
+               8250A  . . . . . . . . . . . . . . . . . . . . . . . .    18
+
+
+
+
+
+
+
+                                                                        iii
+
+               16450  . . . . . . . . . . . . . . . . . . . . . . . .    19
+               16C451 . . . . . . . . . . . . . . . . . . . . . . . .    19
+               16550 Non A  . . . . . . . . . . . . . . . . . . . . .    19
+               16550A . . . . . . . . . . . . . . . . . . . . . . . .    19
+               16550AF  . . . . . . . . . . . . . . . . . . . . . . .    19
+               16550AFN . . . . . . . . . . . . . . . . . . . . . . .    19
+               16550s Made by Western Digital . . . . . . . . . . . .    20
+               16C551 . . . . . . . . . . . . . . . . . . . . . . . .    20
+               16C552 . . . . . . . . . . . . . . . . . . . . . . . .    20
+               82510  . . . . . . . . . . . . . . . . . . . . . . . .    20
+
+          Appendix C, Multi-Port Serial I/0 Cards . . . . . . . . . .    21
+               Connect-Com 4  . . . . . . . . . . . . . . . . . . . .    21
+               4 and 8 Port Boards from Decision-Computer . . . . . .    21
+               Stargate Plus 8 board from Software Link . . . . . . .    22
+
+          INDEX . . . . . . . . . . . . . . . . . . . . . . . . . . .    23
+
+
+
+
+
+
+
+                                                                          1
+
+                                     WHAT IS X00
+
+          X00 is  a Serial Input/Output  (SIO) communications  driver.   It
+          provides  an interface  between  an application  program and  the
+          serial communications hardware.
+
+          X00 was  originally designed as  a FOSSIL  driver.  FOSSIL  is an
+          acronym containing the first  character of several communications
+          programs.   The FOSSIL specification is basically an extension of
+          the PC's BIOS services for serial communications.
+
+          Except as noted in  the Programmers Manual, X00 meets  the FOSSIL
+          level 5  specification.   X00 provides additional  functions that
+          are not contained in the FOSSIL level 5 specification.
+
+          X00 only works with 8250 (TYPE) serial I/O devices.  Such devices
+          include the 8250A,  16450, 16550, 16550A and  the 82510.   If you
+          have a PC that  is an IBM or  near compatible which has  a serial
+          communication  port, it is likely  that it contains  one of these
+          devices.  XU, a  utility distributed with X00, will  identify the
+          existence of compatible SIO devices.
+
+          Like  other  Device Drivers,  X00  will do  very  little standing
+          alone.  There must be an application(s) program to use X00 before
+          you will gain benefit.
+
+          Since  the introduction  of the  FOSSILs, a  great number  of new
+          communications  programs have  come into  existence.   I like  to
+          think  that the FOSSILs are  largely responsible for  this.  Many
+          programs that contain their own communications drivers have added
+          FOSSIL support.  One notable example is RBBS.
+
+          Many  programs  written  to  use  BIOS's   serial  communications
+          services will also work  with X00.  This gives those programs the
+          benefits of buffered interrupt driven I/O.
+
+          Warranty
+
+          There is none.  Use at your own risk.
+
+
+
+
+
+
+
+                                                                          2
+
+
+                                Licensing Information
+
+          Non-Commercial License:
+
+          A  non-commercial license  for  use of  X00  is included  in  the
+          distribution file called LICENSE.TXT.
+
+          Commercial License:
+
+          Commercial Licenses will  be liberally  granted in  return for  a
+          donation (usually tax deductible).   Each commercial license will
+          be individually granted.  That is, there is no single policy that
+          can be stated  here.  Some  generally uniform commercial  license
+          policies follow (see next page for fasttrack licensing).
+
+          1 - X00 is usually licensed by product.
+
+          2 - All commercial  licensees of X00 will receive a  special copy
+          of X00 that will identify, at boot time, the commercial product.
+
+          3 -  I may require a fully licensed, fully featured, copy of your
+          product for personal use on multiple computers.
+
+
+          4 - The required  contribution, which is never to  me personally,
+          will usually be a one time contribution of $100.00.
+
+          5 - Proof of  licensing belongs to you.  That is,  I am not going
+          to be responsible for keeping records.  I suggest that you keep a
+          copy  of the donation check so  that you can send me  a copy if a
+          question  arises.    Otherwise  you  may  have  to  make  another
+          contribution.
+
+          6 -  You may only  distribute versions  of X00 that  contain your
+          product name in the X00 banner (at boot time).
+
+          7  - If you wish to have  the latest version of X00 automatically
+          sent to you with your product name in the X00 banner, then do the
+          following:   Send me a check for $10.00, in advance, along with a
+          pre-addressed mailing label.  If you require a 3.5 inch diskette,
+          then write "3.5 inch" on the pre-addressed mailing label and send
+          $15.00 (instead of  $10.00).   For updates, the  check should  be
+          made out to  Raymond L. Gwinn.   The checks  will be cashed  when
+          received.  Individuals that  wish to receive a mailed copy of the
+          latest X00  version may also use  this procedure.  Once  you have
+          received  an update, you  will need to resend  the update fee and
+          pre-addressed mailing  label if you  desire to  receive the  next
+          update.
+
+          8  -   Your  contribution  check  should   state  "X00  Licensing
+          contribution" in the Memo or comment field.
+
+
+
+
+
+
+
+                                                                          3
+
+          If  you  write me  about a  commercial  license (see  next page),
+          please include a voice phone number.  Your chances of receiving a
+          response are  better  if  the  voice phone  number  is  included.
+          Correspondence should be sent to:
+
+                    Raymond L. Gwinn
+                    12469 Cavalier Drive
+                    Woodbridge, Va. 22192
+
+          Prior to making the special version of X00 available, I may  wait
+          for the  check to clear the bank.  If  the check bounces, I will,
+          most  likely, not give any further  consideration to a commercial
+          license.
+
+
+
+
+
+
+
+                                                                          4
+
+
+          Commercial license fasttrack:
+
+          Remember,  in general, a  commercial license is  required only if
+          you wish to distribute X00 with another software product.
+
+          1  - In  a note  or letter,  give the  name of  the  PRODUCT (not
+          company)  that  X00 will  be distributed  with.   If you  wish to
+          distribute X00  with multiple products, you will have to purchase
+          an equal number of licenses.
+
+          2 - Make a check out to "Young Life" for $100.00 and send it to:
+
+                    Raymond L. Gwinn
+                    12469 Cavalier Drive
+                    Woodbridge, Va. 22192
+
+
+          Consultants:  The  licensing fee to distribute  X00 with software
+          that you have written for  a client is $1.00 per copy.  The first
+          100 copies must be paid for in advance.  That is, send a check as
+          described in 2 above.
+
+          Shareware: See 1 and 2 above.
+
+          Remember,  I do not  make any  money from  X00.   I get  too many
+          messages  and letters  for me  to respond  to.   If you  must ask
+          questions (before you  send a  check) then you  are probably  not
+          going to get an answer or license.
+
+
+
+
+
+
+
+                                                                          5
+
+
+                                   GETTING STARTED
+
+          Installing X00
+
+          X00  is distributed  as a  ZIP file.   To extract  the individual
+          files  from the distribution file you need the program PKUNZIP or
+          an  equivalent.   PKUNZIP  is  a  product of  PKWARE  and  can be
+          downloaded from  almost any  bulletin board  system  (BBS).   You
+          probably already have PKUNZIP and know how to use it, otherwise I
+          doubt that  you would be reading  this.  When PKUNZIP  is used to
+          extract the various files, -AV should appear after each file name
+          as it is extracted.  In addition, the message:
+
+               Authentic files Verified!
+
+          should appear after the extraction process.  If this message does
+          not appear, or  appears with a name other than  Raymond L. Gwinn,
+          the file is not an original X00 distribution file.
+
+          The  only file  that the  basic user  actually needs  is X00.SYS.
+          Copy  this file to a convenient directory or subdirectory on your
+          system.   I suggest that all users  also install XU.EXE also.  XU
+          can provide important  information about X00 that  may be helpful
+          when problems occur.
+
+
+          Quick Start
+
+          Copy X00.SYS and XU.EXE to the root  directory of your boot drive
+          or diskette.
+
+          If you  are going  to use  standard communications  ports, either
+          COM1 or COM2 on  a PC or AT, or COM1 through COM8 on a PS/2, then
+          add the following line to your CONFIG.SYS file:
+
+               DEVICE=X00.SYS E
+
+          If  you wish  to have  more than  one communications  port active
+          simultaneously,  then  modify the  command  line  to include  the
+          number of simultaneously active  ports you wish to support.   For
+          example,  if you are using DESQview and you  wish to run a BBS in
+          two  different  windows,  then  add the  following  line  to your
+          CONFIG.SYS file:
+
+               DEVICE=X00.SYS E 2
+
+          It  should be  noted that the  above command  tells X00  how many
+          ports that are to  be used simultaneously, not which  ports.  The
+          application program may use ANY 2 serial ports in any order.
+
+          If your setup is more complex, you must read on.
+
+
+
+
+
+
+
+                                                                          6
+
+                                OVERVIEW OF X00 USAGE
+
+                                 General Information
+
+          Things  can get  a little confusing  here.   At the  time of this
+          writing,  X00 is almost (if not completely) unique in its ability
+          to function as a DOS device driver or as a Terminate (or Torment)
+          and Stay Resident program (TSR).
+
+          X00 loaded as a DOS Device Driver
+
+          If X00 is to be used as a DOS device driver, it must be installed
+          using  the CONFIG.SYS  file.   For a  precise description  of the
+          CONFIG.SYS file  and  its  function, please  refer  to  your  DOS
+          manual.  Basically,  you use a text  editor to add a  line to the
+          CONFIG.SYS  file.    The  line  that  you add  is  DEVICE=X00.SYS
+          followed by optional parameters.  The optional parameters will be
+          described later.  If X00.SYS is  not in the current directory you
+          will need to provide a DOS path  to the directory containing X00.
+          For  example, if X00.SYS is in  a subdirectory called COMM on the
+          hard  disk drive  C, the  line  in the  CONFIG.SYS file  would be
+          DEVICE=C:\COMM\X00.SYS.
+
+          X00 loaded as a TSR
+
+          If  X00 is  to be  used as  a Terminate  and Stay  Resident (TSR)
+          program,  then you must rename  or copy X00.SYS  to X00.EXE.  The
+          EXE  version of  X00 must  be in  the current  directory or  in a
+          directory  in the  DOS  path when  it is  executed.   X00.EXE  is
+          executed like  any other DOS program.   That is, you  type X00 at
+          the  DOS prompt followed by any optional parameters.  In reality,
+          you will probably be using a batch file to execute X00.
+
+
+          COMn and PORTn
+
+          X00 allows communications ports  to be swapped around.   That is,
+          the serial port that DOS calls COM1 can be mapped (reassigned) to
+          any X00 port.   Therefore, when a  reference in this  document is
+          made about  PORTn, it  refers to  the serial  I/O device  that is
+          mapped to  that X00  port.   When  a reference  is  made to  COM1
+          through  COM8,  it  refers to  the  serial  I/O  device that  DOS
+          knows/uses as COMn.   Also worth noting  is that DOS numbers  the
+          serial  I/0 devices  starting at  1 (COM1  through COM8)  and X00
+          numbers them starting at 0 (PORT0 through PORT7).
+
+          X00's  default is to assign  PORT0 through PORT7  to COM1 through
+          COM8.
+
+
+
+
+
+
+
+                                                                          7
+
+                                 COMMAND LINE OPTIONS
+
+          The  command line options are  included in the  command line that
+          invokes X00.  In several  cases only the first 1 or  2 characters
+          of the option need be entered.  In other cases, the entire option
+          name  must  be  spelled out.    Unless  otherwise  stated in  the
+          following descriptions,  the entire  option name must  be spelled
+          out.  The parameters are given one after another on the same line
+          and in any order.  The length of the command line is limited only
+          by DOS.
+
+          Specifying number of ports
+
+          If a  single  decimal number  is  in  the X00  command  line,  it
+          specifies  the number  of  ports that  X00  is to  simultaneously
+          support.   The default is  one port.   The maximum  value of  the
+          number of ports is 4 for non PS/2 systems and 8 for PS/2 systems.
+          If you  desire to use more than 4 ports  on a non PS/2, each port
+          address must  be specified (see mapping  port assignments below).
+          Input  and output  buffers are  allocated for  each of  the ports
+          specified.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS 3
+                    DEVICE=X00.SYS 8
+
+               When X00 is loaded as a TSR
+                    X00 3
+                    X00 8
+
+          B option, Locking Baud, Data, Parity and Stop bits
+
+          Normally, the  application program sets  the baud rate  and other
+          parameters  controlling the  serial  I/O hardware.   Some  modems
+          provide  better  performance  when  the  communications  from the
+          computer to modem is constant (Locked).  That is, the computer to
+          modem speed is not the same as the modem to modem speed.  If this
+          option  is   used,  the  modem  must   support  RTS/CTS  hardware
+          handshaking and the feature must be enabled on the modem.
+
+          The B command  line option  requires 2 parameters  and allows  an
+          optional  third parameter.  The  option is specified  in the form
+          B,PORTn,BAUD  RATE,PARITY.  You  will most  likely never  want to
+          lock the parity, data and stop bits.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS B,0,2400 B,1,19200 or
+                    DEVICE=X00.SYS B,1,19200,8N1
+
+               When X00 is loaded as a TSR
+                    X00 B,0,2400 B,0,19200 or
+                    X00 B,1,19200,8N1
+
+
+
+
+
+
+
+                                                                          8
+
+
+          Valid locked baud rates are: 75, 110, 135.5, 150, 300, 600, 1200,
+          1800, 2000,  2400, 3600, 4800,  7200, 9600, 19200,  28800, 38400,
+          57600, and 115200.
+
+          I can  think of few conditions  where it is necessary  to use the
+          optional  third  parameter of  the B  command  line option.   The
+          optional  third parameter is made up of 3 characters that specify
+          the  locked setting for data  bits per character,  parity bit and
+          stop bit(s) in  that order.  The optional  third parameter can be
+          made up of  any combination  of the following  first, second  and
+          third characters.
+
+                    First     Second         Third
+                    5         N = None       1
+                    6         E = Even       2
+                    7         O = Odd
+                    8         M = Mark (always 1)
+                              S = Space (always 0)
+
+
+          The first  character  specifies  the  number  of  data  bits  per
+          character,  the second  character specifies  the handling  of the
+          parity bit and the  third character specifies the number  of stop
+          bits.   When 5 data bits and  2 stop bits (eg 5N2) are specified,
+          the  number of stop bits will actually  be 1.5.  As stated above,
+          locking of the parity etc, is not advisable.
+
+          Anytime an application program attempts to program the baud rate,
+          parity etc, through X00, the locked values will be substituted.
+
+          Eliminate
+
+          Normally,  when X00 is loaded a copyright notice is displayed for
+          5 seconds.  Using the eliminate  option will disable the 5 second
+          display  of the copyright  notice.  Only the  first letter (E) is
+          required to invoke this option.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver:
+                    DEVICE=X00.SYS ELIMINATE or
+                    DEVICE=X00.SYS E
+
+               When X00 is loaded as a TSR
+                    X00 ELIMINATE or
+                    X00 E
+
+          Defer
+
+          The Defer option  creates problems  on most systems.   The  Defer
+          option should be avoided by most users.  X00 must  use several of
+          the  80x86 interrupts.  Normally,  X00 will hook  itself into the
+          80x86 interrupts when it is executed.  The Defer option tells X00
+
+
+
+
+
+
+
+                                                                          9
+
+          to  postpone hooking  into some  interrupts until  an XU  CAPTURE
+          command  is  executed.    If  the defer  option  is  used  and  a
+          subsequent  XU  CAPTURE  is  not  issued,  X00  may not  function
+          correctly.  Additionally,  the XU CAPTURE must be  executed prior
+          to  executing  a multitasker  like DESQview.    Only the  first 2
+          letters (DE) need  to used to specify  this option.   Examples of
+          usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS DEFER or
+                    DEVICE=X00.SYS DE
+
+               When X00 is loaded as a TSR
+                    X00 DEFER or
+                    X00 DE
+
+          The  default for  Defer is  off.   That is,  X00 will  by default
+          immediately hook into all necessary 80x86 interrupt vectors.
+
+          DV
+
+          The  DV command  line option is  only of interest  to those using
+          DESQview.   The  default for  this option  is off.   When  on (DV
+          specified  in the  command line),  X00 will  make DESQview  Pause
+          calls when it seems that  the application program is idle.   This
+          may make  time available for other  tasks to use.   Refer to your
+          DESQview manuals for details about the DESQview pause command.
+
+          If you are  using DESQview, try  the DV option.   If it does  not
+          adversely affect your system, leave it enabled (on).  Examples of
+          usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS DV
+
+               When X00 is loaded as a TSR
+                    X00 DV
+
+          FIFO
+
+          Only the first  letter of the command  (F) is required to  invoke
+          this option.  Some of the serial I/O hardware  devices have First
+          In First Out (FIFO) buffers.  This command line option is used to
+          specify the  number of characters that X00 can load into the FIFO
+          during  a single  transmit  interrupt.   In  general this  number
+          should be set  the size of the  FIFO minus 1.   For example,  the
+          popular 16550A has a 16  byte FIFO on both transmit and  received
+          data.  Thus, if this option is used, I suggest the value of 15 be
+          used for the 16550A.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS FIFO=10
+
+
+
+
+
+
+
+                                                                         10
+
+                    DEVICE=X00.SYS F=15
+
+               When X00 is loaded as a TSR
+                    X00 FIFO=15
+                    X00 F=8
+
+          The size of the receive FIFO is always set to the maximum by X00.
+
+          NOFIFO
+
+          This command line option is used to completely disable the use of
+          hardware FIFOs.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS NOFIFO
+
+               When X00 is loaded as a TSR
+                    X00 NOFIFO
+
+
+          NOPOST
+
+          Normally,  when X00 is executed,  it will alter  the COM1 through
+          COM4 hardware port addresses  in BIOS RAM to match  the addresses
+          being used by X00.  By doing so, many DOOR type programs that use
+          INT  14h  for  their serial  I/O  will  work  correctly with  X00
+          installed.   This option (NOPOST) instructs X00 to leave the BIOS
+          RAM unchanged.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS NOPOST
+
+               When X00 is loaded as a TSR
+                    X00 NOPOST
+
+
+          R, Set Receive Buffer Size
+
+          The R command line option allows the user to  set the size of the
+          receive buffer.   The default size  of the receive buffer  is 512
+          bytes.   The  size of  the buffer must  be a  power of  2.  Valid
+          buffer sizes are:  256, 512,  1024, 2048, 4096,  8192, 16384  and
+          32768.  If an  invalid buffer size  is specified, the next  lower
+          correct buffer size is used.
+
+          Many users needlessly set  the size of the receive  (or transmit)
+          buffer too large.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS R=1024
+                    DEVICE=X00.SYS R=2048
+
+
+
+
+
+
+
+                                                                         11
+
+               When X00 is loaded as a TSR
+                    X00 R=1024
+                    X00 R=2048
+
+
+          T, Set Transmit Buffer Size
+
+          This option is identical to the R command line option (see above)
+          except it sets the size of the transmit buffer.
+
+
+          VP or Master Interrupt Enable
+
+          VP stands for Vector  Port which is not a very good  name for the
+          option.  Some multiple port serial I/O cards default to  only two
+          ports enabled when power is turned on.  A specified value must be
+          written to an  I/O port  to enable the  additional serial  ports.
+          Simply stated the VP command line  option says to write the given
+          value to the given port.  Examples of usage are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS VP=03FF,80
+
+               When X00 is loaded as a TSR
+                    X00 VP=3FF,80
+
+          Both of  the above examples  in effect says,  write the value  80
+          (hex) the I/O port at 3FF.
+
+
+          Mapping port assignments
+
+          This  is the most complicated command line option for many users.
+          By default,  X00 maps up to  8 serial I/O ports  (PORTS 0 through
+          7).  X00 will (attempt to) determine the hardware architecture on
+          which  it is  being executed.   If  a PS/2  is detected  then the
+          default Serial  I/O port addresses will be  set to match the PS/2
+          (see Appendix  .  If X00  detects that the  system is not  a PS/2
+          type system, then the default port addresses are as follows:  1 -
+          Standard  addresses for COM1 and  COM2, 2 -  The defacto standard
+          for COM3 and  COM4, and nothing  for COM5  through COM8 (ports  4
+          through 7).
+
+          Port mapping is necessary if your hardware configuration does not
+          match the PS/2 or  defacto standard for non  PS/2 systems.   COM1
+          and COM2  are the same  for the PC,  XT, AT  and PS/2.   However,
+          hardware  specifications for COM3  through COM8  became available
+          only when IBM released the PS/2.
+
+          Many multiple  serial  port  cards are  available  for  pre  PS/2
+          systems that use a defacto standard.  The most common assignments
+          that I have seen for COM3 and COM4 are:  COM3 at port address 3E8
+
+
+
+
+
+
+
+                                                                         12
+
+          using IRQ 3.   COM4 at port  address 2E8 using IRQ 4.   Above the
+          fourth port, I  have not observed  anything resembling a  defacto
+          standard.
+
+          X00  will support almost any  serial I/O card.   However, in most
+          cases,  port mapping  is required  for anything  beyond COM1  and
+          COM2.
+
+          Mapping port assignments uses two basic forms.  They are:
+               PORTn=COMn,IRQn
+               PORTn=HEXADDRESS,IRQn
+
+          Where:
+               PORTn is the X00 port number and must be 0 through 7.
+
+               COMn is a standard DOS port and must be COM1 through COM8.
+
+               IRQn is the IRQ use by the serial port and must be IRQ0
+               through IRQ15.
+
+               HEXADDRESS is a hexadecimal I/O port address that addresses
+               the serial I/O device.
+
+          In both basic forms, the IRQn is optional.  X00 defaults all IRQn
+          to  IRQ3 except COM1  which defaults to IRQ4.   Examples of usage
+          are:
+
+               When X00 is loaded as a Device Driver
+                    DEVICE=X00.SYS 0=COM4
+                    DEVICE=X00.SYS 0=COM4,IRQ5
+                    DEVICE=X00.SYS 0=2E8,IRQ3
+                    DEVICE=X00.SYS 2=2E8
+
+               When X00 is loaded as a TSR
+                    X00 0=COM4
+                    X00 0=COM4,IRQ5
+                    X00 0=2E8,IRQ3
+                    X00 2=2E8
+
+
+          Un-installing X00
+
+          When X00  is installed as a TSR, it can be un-installed by simply
+          executing X00 with no command line parameters.  If you wish to be
+          sure that you do not accidently un-install X00, always execute it
+          with a harmless parameter like X00 E.
+
+
+
+
+
+
+
+                                                                         13
+
+                                    Multi-Tasking
+
+          By  far, DESQview seems to be the multi-tasking software that X00
+          is  most  often used  with.    At the  time  of  this writing,  I
+          personally use DESQview to run a multi line BBS.
+
+          I believe it is best to load X00 before the multi-tasking program
+          and  to load  it as a  device driver.   This  enables all windows
+          (tasks)  access to X00.   Loading X00 first  also allows multiple
+          windows to share the same IRQ.
+
+          If  you have loaded X00 prior to  DESQview, you need to configure
+          the window  for no  communications.   That is,  answer NO  to the
+          configuration   questions,   Uses  Serial   Ports   and  Optimize
+          communications.     I  also  suggest  that   you  enable  printer
+          management within the window.  Enabling printer management allows
+          a  remote drop  to DOS  to work  on many  systems.   The Optimize
+          communications  option and  the  Printer  management  option  are
+          established with  the DESQview  SETUP program.   The  Uses serial
+          ports  (Y,N,1,2) option is in  the "Change a  Program" portion of
+          window configuration.
+
+          In  several  cases  I  have  gained  a  significant  increase  in
+          performance by turning X00 on prior  to executing a program.  Two
+          notable cases are GATEWAY and DOORWAY.  I used XU to turn X00 on.
+          For example, XU PORT:n:ON just before invoking DOORWAY or GATEWAY
+          produced significantly better input and output from the programs.
+          Depending  on your environment, an  XU PORT:n:OFF may  have to be
+          issued after  the program terminates.   Also note that the  n for
+          PORTn is 1 less than the n in GATEn and COMn.
+
+          The communications windows seem  to work better if the  ticks for
+          the  foreground and  background  are set  relatively  low.   Most
+          people that  I have talked to use 2 ticks for both foreground and
+          background.  Only experimentation will determine the best setting
+          for your system.
+
+          If you do  not wish to share  an IRQ, you can  load X00 as a  TSR
+          inside  a DESQview window.  When loaded inside a DESQview window,
+          X00 is  only available to programs in that window.  X00 should be
+          configured  to  support   only  1  serial  port  and  you  should
+          specifically name the port that X00 will use in the command line.
+          For example use X00 0=COM1,  instead of X00 1 or just  plain X00.
+          Identifying the specific  serial port  to be used  in the  window
+          eliminates the chance that X00 will interfere with another active
+          window.
+
+          I strongly recommend that you use the 16550A (or later)  SIO chip
+          if you are using a multi-tasking system of any kind.
+
+
+
+
+
+
+
+                                                                         14
+
+
+          Most programs written to use BIOS INT 14h will work directly with
+          X00's enhanced services.  You should try turning  X00 on using an
+          XU  PORT:n:ON  command  just  prior  to  executing  the  program.
+          Programs  that  do not  have their  own  interrupt I/O  will most
+          likely give better performance.
+
+
+
+
+
+
+
+                                                                         15
+
+                              THE BIOS INT 14h EMULATOR
+
+          X00 is a  BIOS INT 14h enhancement.   So what  is the need for  a
+          BIOS  emulator also?   Well, when X00  is turned off  for a given
+          port,  it  does  not process  the  INT  14h  functions using  the
+          enhanced code.   Prior  to the introduction  of the BIOS  INT 14h
+          emulator, X00 simply passed calls to inactive serial ports to the
+          BIOS INT 14h.
+
+          Serial   communications  has   changed  considerably   since  the
+          definition of  the original BIOS for  the PC.   However, the BIOS
+          services for  serial  communications have  changed  very  little.
+          Many  program are still written  to use the  original BIOS serial
+          communications  services.  Many older  programs that use the BIOS
+          communications services are still widely used.
+
+          Problems occur  when advanced  high  speed modems  are used  with
+          these programs.  Many of the  programs are totally unaware of the
+          concept of RTS/CTS handshaking that most of the high speed modems
+          use.  The programs cannot be aware that the user  may have mapped
+          the port  addresses.   BIOS  for  all systems  (that  I know  of)
+          support only  4 serial  communications ports except  PS/2 systems
+          which support 8.
+
+          I added  the BIOS emulator to X00 to support many of the programs
+          that  are not (or cannot  be) aware of  the active communications
+          environment.
+
+          By default,  X00's BIOS INT 14h  emulator is enabled.   It can be
+          disabled by adding USEBIOS to the command line that invokes X00.
+
+          When the emulator is enabled, port mapping, baud rate locking and
+          hardware handshaking for the serial  port(s) are maintained and 8
+          serial ports are supported.   If the serial  I/O chip is  FIFOed,
+          the  emulator allows the FIFOs to be  used.  This means that many
+          programs  written to use  BIOS can be  used in  the more advanced
+          communications environments.
+
+          The BIOS  emulator can  be activated and  deactivated dynamically
+          using XU.
+
+
+
+
+
+
+
+                                                                         16
+
+                                     IRQ SHARING
+
+          Sharing the same IRQ for multiple communications ports is not for
+          the weak of heart (or mind).
+
+          Most popular  multitasking software  seems to do  everything they
+          can to  prevent the sharing of  a single IRQ between  two or more
+          tasks (windows).   This big brother attitude  of the multitaskers
+          is cause of most of the  problems in sharing a single IRQ between
+          several  serial  communications  ports.    Several communications
+          ports  sharing a single IRQ is not  too difficult to manage.  The
+          problem is the multitaskers not allowing the sharing of an IRQ by
+          more than one task (window).
+
+          In any  case, version 1.20 of X00  has been tested with DESQview,
+          RBBS  and  8 comm  ports  sharing  IRQ 3.    I  have also  tested
+          MultiLink  with  2  comm  ports  sharing  the  same  IRQ.    With
+          MultiLink, I had to use  the NASTY option.  Do not  use the NASTY
+          option with DESQview.
+
+          The  method  I  have developed  to  force sharing  of  an  IRQ by
+          multiple  comm   ports  should   work  on  most,   if  not   all,
+          multitaskers.  It is too big a job, and too costly for me to test
+          them all.
+
+          Some general rules are as follows:
+
+          1  - X00 should  be loaded before  the multitasker.   That is, if
+          your multitasker allows the  loading of device drivers  into each
+          window, DO NOT DO  IT if you wish to  share an IRQ.  Load  X00 at
+          boot time and it should then be available to all tasks (windows).
+
+          2 - Two different  boards (plugged into different slots)  can not
+          share the same IRQ.  This is a hardware limitation and can not be
+          corrected  by software.  This means that  you can not plug in two
+          internal  modems, set them  for the same  IRQ and  expect them to
+          work.   This  does not  apply to  PS/2 systems.   The  problem of
+          multiple  boards sharing the same IRQ was corrected in the PS/2's
+          buss design.
+
+          3 -  When  configuring  the DESQview  windows,  we  specified  NO
+          communications  in the  window.   Remember, it  is X00  (which is
+          hopefully  outside   any  window)   that  is  doing   the  actual
+          communications and not the application program inside the window.
+
+          4 - X00 can not  (will not) share an IRQ with other software.  If
+          you attempt to run a program in a window that uses an IRQ that is
+          being used by X00, the results are unpredictable.
+
+          5 - Do not load X00 into EMS memory.  Loading high is okay.
+
+
+
+
+
+
+
+                                                                         17
+
+                    Appendix A, Hardware Port and IRQ Assignments
+
+          I have  obtained the following information  from various sources.
+          Accuracy is not guaranteed.  In fact, nothing in this document is
+          guaranteed.
+
+          Addresses and IRQs for COM1 and COM2
+
+               COM1 uses 03F8h and IRQ4
+               COM2 uses 02F8h and IRQ3
+
+          Defacto standard for COM3 and COM4 for PC, XT and AT
+
+               COM3 uses 03E8h and IRQ4
+               COM4 uses 02E8h and IRQ3
+
+          Addresses and IRQ for COM3 through COM8 on the PS/2
+
+               COM3 uses 3220h and IRQ3
+               COM4 uses 3228h and IRQ3
+               COM5 uses 4220h and IRQ3
+               COM6 uses 4228h and IRQ3
+               COM7 uses 5220h and IRQ3
+               COM8 uses 5228h and IRQ3
+
+          All  PCs prior to the PS/2 only  used 12 bits to address hardware
+          I/0 ports.   Systems prior to  the PS/2 and EISA  can not address
+          the standard  addresses for COM3 through COM8.  If an AT of below
+          attempts  to  address  COM3   through  COM8  using  the  standard
+          addresses, only  the low 12 bits  of the address are  used.  That
+          is,  the high digit of  the hexadecimal address  will be ignored.
+          This  means that any reference to COM3 through COM8 will actually
+          address ports 220h through 22Fh.
+
+          You  should avoid  expansion boards that  use ports  220h through
+          22Fh unless the expansion board is a serial I/O board. 
+
+          X00 will (attempt to) determine the hardware architecture that it
+          is being executed  on and  use to appropriate  port addresses  as
+          defaults.
+
+
+
+
+
+
+
+                                                                         18
+
+                                Appendix B, SIO Chips
+
+
+          The following is a collection of comments developed from hearsay,
+          random documents, experience,  and technical specifications.  So,
+          take it with a grain of salt.  Order information from the various
+          manufactures if you want accurate information.
+
+          A very good reference book that I use is  available from National
+          Semiconductor Corporation.   It  covers most  of the  SIO devices
+          (also  called UARTs)  that you will  find in all  PCs and clones.
+          The title  of the book is  Microcommunications Elements Databook.
+          The publication number (manual number) is  400066.  I am not sure
+          that   the   book  can   be   ordered   directly  from   National
+          semiconductor.  They  may   require  that  you  get   it  from  a
+          distributor.   In any case, the address on the back of the manual
+          is:
+
+               National Semiconductor Corporation
+               2900 Semiconductor Drive
+               P.O. Box 58090
+               Santa Clara, CA 95052-8090
+
+               Tel:(408)721-5000
+               TWX:(910)339-9240
+
+          8250
+
+          As best that I know, the 8250 was the first  SIO chip (integrated
+          circuit) that was  used by the  IBM PC  and many clones.   In  my
+          opinion,  it was a poor choice  on the part of IBM.   I feel many
+          superior devices, at comparable  prices, were readily  available.
+          At that time, I feel the 8251A or the 8530 would have been better
+          choices.   I feel IBM  used the 8250  to insure the PC  would not
+          have   synchronous  communications   capability  in   a  standard
+          configuration.
+
+          From  a hardware standpoint the 8250 is a relatively slow device.
+          It is advisable that programmers not perform successive inputs or
+          outputs to this device.  It seems that software programs can load
+          the various registers of the 8250 faster  than it can process the
+          information.    The  8250  had  a  total  of  7 registers.    The
+          specifications state that 56kb is the maximum baud rate.
+
+          8250A
+
+          I believe the 8250A is the  8250 with some bug fixes.  I  have no
+          idea  what  the bugs  may  have  been.   A  quick  glance at  the
+          specifications shows the speed  of the 8250 and 8250A  to be much
+          the  same.   The 8250A  added an  8th register.   This additional
+          register enables software to detect if an 8250 is installed.  The
+          specifications state that 56kb is the maximum baud rate.
+
+
+
+
+
+
+
+                                                                         19
+
+          16450
+
+          The  16450 seems to be a speeded up  version of the 8250A.  There
+          is no  direct way (that  I know  of) for software  to detect  the
+          difference between an 8250A and a 16450.  I believe the 16450 was
+          developed to  eliminate the  need for  software to  insert delays
+          between successive  accesses to  the device.   The specifications
+          indicate the 16450 is a much faster device than its predecessors.
+          The additional speed is only the speed at which the processor can
+          access the  device.  The maximum baud rate for the 16450 is still
+          stated at  56kb.  However, I  have been told by  some people that
+          they have run the  16450 successfully at much higher speeds. I do
+          not believe there was ever a 16450A.
+
+          16C451
+
+          The  16C451 is a CMOS version  of the 16450.  CMOS  is a term for
+          the  material and  manufacturing process  used to make  the part.
+          CMOS typically uses less  power than other technologies.   If you
+          are  not  designing hardware,  you should  view  the 16C451  as a
+          16450.
+
+          16550 Non A
+
+          It is  hard to  find a 16550  (Non A).   I  was told by  National
+          Semiconductor that  they did  everything  they could  to get  all
+          16550s  back.  X00 (and  XU) will detect a 16550  and tell you if
+          you have one.   I am told  that the 16550 was  installed in early
+          PS/2 systems.
+
+          The 16550  was the first  shot at  a FIFOed version  of the  8250
+          family  from  National semiconductor.    However, I  was  told by
+          National  Semiconductor  that the  FIFOs  of  the 16550  are  not
+          reliable and  they should not be enabled.  X00 will treat a 16550
+          like  a 16450.    In  this mode,  they  are  reliable.   National
+          Semiconductor would not provide  me with a specification for  the
+          16550.  However, I suspect  its maximum baud rate is the  same as
+          the 16550A which is 256kb.
+
+
+          16550A, 16550AF and 16550AFN
+
+          In the  manuals  that I  have,  National Semiconductor  does  not
+          explain  the differences between the  16550A and the  16550AF.  I
+          suspect the AF part may have a few bug fixes.  I believe the N in
+          AFN  describes packaging,  ceramic  versus  plastic,  DIP  versus
+          surface mount etc.
+
+          In  the opinion  of the  author, there is  no substitute  for the
+          16550A (and its  successors) in the 8250 type series.  The 16550A
+          is compatible with software written for the entire family of 8250
+
+
+
+
+
+
+
+                                                                         20
+
+          type  devices.  Programs that  are 16550A aware  can provide much
+          improved performance over previous devices.
+
+          The  maximum  baud rate  for the  16550A  is specified  at 256kb.
+          However, due to the hardware design of the PC et al, 115kb is the
+          maximum baud rate that can be programmed.
+
+          The 16550A can be  plugged into the same socket that  contains an
+          8250, 8250A  or 16450.  If  your SIO expansion board  has the SIO
+          chips  in  sockets,  you can  upgrade  to  the  16550A by  simply
+          removing the old chips and replacing them with 16550As.
+
+          The key to  the performance increase of the 16550A  is its FIFOs.
+          It has 16 byte FIFOs for both transmit and receive data.
+
+          16550s Made by Western Digital
+
+          I have been told, but I have not verified for myself, that 16550s
+          made  by Western  Digital have  a problem  with their  FIFOs when
+          working at 2400 baud or below.
+
+          16C551
+
+          The  16C551 is  a CMOS  version of  the 16550AF.   See  the above
+          description of  the 16C451 for a discussion of CMOS.  Do not feel
+          you need to upgrade from a 16550A or AF to a 16C551.  There is no
+          gain from an existing users point of view.
+
+          16C552
+
+          The 16C552 is two 16C551s  on a single chip.  These  devices will
+          start showing up on multi-port serial I/O cards.
+
+          82510
+
+          I  believe Intel is the only company that manufactures the 82510.
+          The 82510  is feature rich with several  modes of operation.  Its
+          default  mode is to operate as  a 16450.  The 82510  has a 4 byte
+          FIFO  for both  transmit and  receive  data.   A 4  byte FIFO  is
+          sufficient to provide significant performance over a basic 16450.
+
+          The  82510 is small in size.  Therefore,  it is found in many lap
+          tops.
+
+          The 82510 is  somewhat of a sleeper.  I believe  it would be much
+          more widely used if Intel had promoted it more.  However, given a
+          choice  between  the 82510  and the  16550A,  I would  select the
+          16550A.
+
+
+
+
+
+
+
+                                                                         21
+
+                       Appendix C, Multi-Port Serial I/0 Cards
+
+          I  get many requests for information  about multi-port serial I/O
+          card.   I will describe  the boards  that I know  about (or  have
+          heard about) here.  I  will add to the list as  I receive precise
+          information from users.
+
+          My  personal experience  is with two  boards that  allow multiple
+          serial I/O ports to share  a single IRQ.  The first board  that I
+          experimented with  was the  Connect-Com 4  from Software  Link in
+          Atlanta Georgia.  The second board is the 4 PORT RS-232 CARD from
+          Decision-Computer International in Taipei, Taiwan.
+
+          Connect-Com 4
+
+          I found the manual for the Connect-Com 4 to be very confusing and
+          their  tech support  even less helpful.   I  was able  to get the
+          board  configured to  use  the standard  COM1  and COM2  and  the
+          defacto standard for COM3  and COM4.  If you use  the Connect-Com
+          4, I suggest  that you use it  in this manner.   This means  that
+          COM1 and COM3 will use IRQ4 and COM2 and COM4 will use IRQ3.  The
+          Connect-Com 4  has an  8 position DIP  switch for  configuration.
+          The setting that I used was positions 2, 3, 7 and  8 ON (up), and
+          all  other positions OFF (down).  In retrospect the Connect-Com 4
+          seems  a bit expensive.   However, once  configured properly, the
+          Connect-Com  4  worked without  problem.   Software  Link  can be
+          reached in Atlanta Georgia at 404-448-5465.
+
+          4 and 8 Port Boards from Decision-Computer
+
+          The second  board that I have personally used, and the one that I
+          am  currently using  is from  Decision-Computer.   The  manual is
+          written  well enough that I  did not need  any technical support.
+          There are two boards of interest from Decision-Computer, one is a
+          4 port  serial I/O card  and the  other is an  8 port  serial I/O
+          card.   I read  somewhere in the  documentation (which  I can not
+          find  at this  time)  that  the  boards are  a  clone  of  boards
+          available from AST.
+
+          The boards from  Decision-Computer are configured by jumpers.   I
+          use 4  ports of  the 8  port card.   I  selected the  (so called)
+          Compatible Mode.  This means that the first two  serial I/O ports
+          operate   as  standard  COM1   and  COM2  using   IRQ4  and  IRQ3
+          respectively.  The jumper setting for Compatible Mode is  clearly
+          shown  in  the manual  (page  8  of my  manual).    The I/O  port
+          addressed used in that mode are  also clearly defined on the same
+          page.
+
+          A second jumper that must be set (JP2) defines the number of wait
+          states.   I set  the  jumper in  position 3  which  means 2  wait
+          states.  This was  for a 20 mhz  386 system.  This setting  works
+          fine for me.  More wait  states may be required or less  may work
+
+
+
+
+
+
+
+                                                                         22
+
+          on your system.   The amount of time lost due to  wait states for
+          serial I/O is very minimal.
+
+          The  last jumper(s) for the Decision-Computer 8 port RS-232 board
+          is the selection of the IRQ(s) for ports other than  the first 2.
+          I selected  IRQ3 for the additional  ports that I am  using (I am
+          only using 4 of the 8).  This means that the first port (COM1) is
+          using IRQ4, all of the other (3) ports are using  IRQ3.  Position
+          2 of JP3 (left side) is the jumper that I installed.
+
+          Stargate Plus 8 board from Software Link
+
+          Dan  Fox originally helped me with the testing of multiple serial
+          I/O  ports sharing a single IRQ.   He informed me that the serial
+          I/O board that he uses is a  Stargate Plus 8 Board.  He purchased
+          the board  from Software  Link in Atlanta  Georgia, 404-448-5465.
+          Dan has all 8 ports using IRQ3.
+
+
+
+
+
+
+
+                                                                         23
+
+                                        INDEX
+
+          16450 . . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+          16550 Non A . . . . . . . . . . . . . . . . . . . . . . . . .  19
+          16550A  . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+          16550AF . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+          16550AFN  . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+          16550s Made by Western Digital  . . . . . . . . . . . . . . .  20
+          16C451  . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+          16C551  . . . . . . . . . . . . . . . . . . . . . . . . . . .  20
+          16C552  . . . . . . . . . . . . . . . . . . . . . . . . . . .  20
+          8250  . . . . . . . . . . . . . . . . . . . . . . . . . . . .  18
+          8250A . . . . . . . . . . . . . . . . . . . . . . . . . . . .  18
+          82510 . . . . . . . . . . . . . . . . . . . . . . . . . . . .  20
+          Addresses and IRQ for COM3 through COM8 on the PS/2 . . . . .  17
+          Addresses and IRQs for COM1 and COM2  . . . . . . . . . . . .  17
+          Appendix A, Hardware Notes  . . . . . . . . . . . . . . . . .  17
+          Appendix B, SIO Chips . . . . . . . . . . . . . . . . . . . .  18
+          Appendix C, Multi-Port Serial I/0 Cards . . . . . . . . . . .  21
+          B option, Locking Baud, Data, Parity and Stop bits  . . . . . . 7
+          Baud rates  . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          BIOS RAM  . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+          CAPTURE . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+          COMn and PORTn  . . . . . . . . . . . . . . . . . . . . . . . . 6
+          CONFIG.SYS  . . . . . . . . . . . . . . . . . . . . . . . .  5, 6
+          Defacto standard for COM3 and COM4  . . . . . . .  11, 12, 17, 21
+          Defer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          DESQview  . . . . . . . . . . . . . . . . . . . . .  5, 9, 13, 16
+          DV  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+          Eliminate . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          FIFO  . . . . . . . . . . . . . . . . . . . . . 9, 10, 15, 19, 20
+          FOSSIL  . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          GETTING STARTED . . . . . . . . . . . . . . . . . . . . . . . . 5
+          IRQ SHARING . . . . . . . . . . . . . . . . . . . . . . . . .  16
+          Licensing Information . . . . . . . . . . . . . . . . . . . . . 2
+               Commercial License . . . . . . . . . . . . . . . . . . . . 2
+               Commercial license fasttrack . . . . . . . . . . . . . . . 4
+               Non-Commercial License . . . . . . . . . . . . . . . . . . 2
+          Locked  . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+          Locking . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+               Baud . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+               Data . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+               Parity and Stop bits . . . . . . . . . . . . . . . . . . . 7
+               Valid locked baud rates  . . . . . . . . . . . . . . . . . 8
+          Mapping port assignments  . . . . . . . . . . . . . . . . . .  11
+          Multi-Tasking . . . . . . . . . . . . . . . . . . . . . . . .  13
+          NOFIFO  . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+          NOPOST  . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+          Number of data bits . . . . . . . . . . . . . . . . . . . . . . 8
+          Number of stop bits . . . . . . . . . . . . . . . . . . . . . . 8
+          Parity bit  . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          PKUNZIP . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+
+
+
+
+
+
+
+                                                                         24
+
+               Authentic files  . . . . . . . . . . . . . . . . . . . . . 5
+          Port assignments  . . . . . . . . . . . . . . . . . . . . . .  11
+          Quick Start . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+          R, Set Receive Buffer Size  . . . . . . . . . . . . . . . . .  10
+          RBBS  . . . . . . . . . . . . . . . . . . . . . . . . . . . .  16
+          SIO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          SIO Chips . . . . . . . . . . . . . . . . . . . . . . . . . .  18
+          Specifying number of ports  . . . . . . . . . . . . . . . . . . 7
+          T, Set Transmit Buffer Size . . . . . . . . . . . . . . . . .  11
+          Terminate and Stay Resident . . . . . . . . . . . . . . . . . . 6
+          THE BIOS INT 14h EMULATOR . . . . . . . . . . . . . . . . . .  15
+          TSR . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+          Uninstalling X00  . . . . . . . . . . . . . . . . . . . . . .  12
+          VP or Master Interrupt Enable . . . . . . . . . . . . . . . .  11
+          Warranty  . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          WHAT IS X00 . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+

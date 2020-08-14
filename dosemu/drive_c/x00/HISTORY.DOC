@@ -1,0 +1,496 @@
+
+
+
+
+
+
+
+
+
+          REVISION HISTORY
+
+          V1.20
+          This release contains new  versions of CAPTURE and WATCHCD.   The
+          older  versions will not work  with this (and  future) release of
+          X00.
+
+          Anyone  attempting to share a  single IRQ on  multiple comm ports
+          should read SHARE.IRQ
+
+          Extensive changes to improve multiasking performance.
+
+          Many  changes   have  been  made   to  allow  shared   IRQs  with
+          mulitaskers.   Eight RBBSs all  sharing IRQ 3  using DESQview has
+          been  successfully tested with  this version of X00.   The 8 port
+          RBBS system was set up and tested by Dan Fox at:
+
+               Defence Logistics Services Center
+               74 North Washington
+               Battle Creek, Mi. 49021
+
+          Through  a coding  error,  when the  transmit  buffer size  being
+          specified,  a random  memory location  was  being changed.   This
+          error has been corrected.
+
+          The NASTY option is now nastier.  Remember, the NASTY option will
+          cause some systems to hang (and some to work).
+
+          Status structure  returned by function  1BH (27) now  returns the
+          actual transmit and receive buffer size.   Previously the default
+          buffer size was returned.
+
+          Code was streamlined for faster execution.
+
+          1.20a
+          This is not a beta, in  retrospect possibly 1.20 should have been
+          a  beta.  V1.20  introduced code that can  cause X00 to interfere
+          with other  communication programs.  This  problems shows  itself
+          when an application program exits and leaves the FOSSIL active on
+          a given  port.  If  another program uses  the comm port  that was
+          left  active,   X00  will   interfere  with  the   program.  Most
+          noticeably,  it  will miss  received  characters.   One  way this
+          problem could come up is using Binkley with SHARE  in the command
+          line.  There appears to be several programs out there that  leave
+          the FOSSIL hot  when they exit.   Application programmers  should
+          always disable any ports  they may have activated when  they exit
+          or  implement the equivalent of the Binkley SHARE option which is
+          the correct way to exit with the FOSSIL still active.
+
+          The default buffer size has been changed from 4k to 1k.  I really
+          don't think buffers as large as 4k are necessary on most systems.
+          However, you can set them back to 4k by using the  R and T option
+          in the DEVICE = command line.
+
+
+
+
+
+
+
+          This  version  corrects a  problem  that  made some  Trailblazers
+          practically unusable.   Additionally, users of  other modems that
+          use RTS/CTS handshaking will see improved performance.
+
+          A problem with mapping ports was corrected.
+
+          Added the quick and  dirty C HLLAPI routines to  the distribution
+          file.  See CHLLAPI.DOC in the CHLLAPI.ARC archive.
+
+          I  did not add it  to the semi-formal  command line documentation
+          above.  However, a new command  line option has been added.  This
+          command  allows the user to  specify the transmit  FIFO size that
+          X00 is to use when a 16550 is installed.  The command line option
+          is  F{IFO}=n where n is 1 to  16.  The default transmit FIFO size
+          is  8.   For  reasons  I do  not  understand,  some systems  have
+          problems  if the FIFO size is set to the maximum of 16.  However,
+          15 seems to  work on all tested systems.   The F=n statement will
+          be  ignored if a 16550  is not installed.   Through a programming
+          error, X00 previously  has never used more  than one byte  of the
+          16550 transmit FIFO.   Users with 16550s installed will  probably
+          see  increased transmit speeds with this version of X00.  Setting
+          the  transmit FIFO to a value larger  than the default value of 8
+          may yield marginally better transmit speeds.  However, setting it
+          to the maximum of  16 may cause some connections  and/or programs
+          to miss characters.
+
+          1.20b
+          Version 1.20a  lasted only  about  4 hours.   I  apologize.   The
+          correction  of  the  port  assignment problem  in  V1.20a  caused
+          another problem when  only one comm port  was used and  that port
+          was  not  COM1.    That  problem  is  corrected  (with  a  single
+          instruction) in this version.  Again, I apologize.
+
+          1.20b, second release
+          No  changes  in  X00.SYS  itself from  1.20b's  initial  release.
+          Included more HLLAPIs in the distribution file  (Turbo Pascal and
+          Quick   Basic).     Cleaned  up   the  documentation.     Changed
+          distribution  file from ARC to  ZIP (V1.01) format.   Changed the
+          X00 license to a modified version of the BinkleyTerm License.
+
+          1.20c
+          Corrected a problem in processing IRQs  8 through 15.  The FOSSIL
+          boot function and BOOT.COM will now boot  under DesqView 386.  My
+          thanks to Don Carroll of Quarterdeck for checking out  the use of
+          IRQs 8 through 15 with BinlkeyTerm.  HLLAPIs for C, Turbo  Pascal
+          and Quick Basic are now included in the distribution file.
+
+          1.22
+          Added hooks that allow the line monitoring Break Out Box (BOB) to
+          do its thing.   No real  documentation is available for  BOB yet.
+          If you can figure out how to use it, have fun.
+
+          Added additional code to the booting code to insure booting under
+          DesqView.  BOOT.COM received the same additional code.
+
+
+
+
+
+
+
+          Added DesqView Pause functions  at strategically selected places.
+          This  should cause  systems operating  under DesqView  to operate
+          better.  Use  the DV  option flag to  enable the DesqView  calls.
+          Users of the  DEFER option should  note that a  lone D no  longer
+          specifies the DEFER option.  With the addition  of the DV option,
+          DE must be specified to enable the DEFER option.
+
+          Rearranged memory  to make  it easier for  X00 to be  loaded into
+          high  memory using  utilities  like LOADHI.SYS  from Quarterdeck.
+          Using the STACKS  command in  CONFIG.SYS to specify  a DOS  stack
+          smaller  than the  DOS  default may  cause  a problem  with  this
+          version of X00.   If you have  problems, try removing the  STACKS
+          command from the CONFIG.SYS file.
+
+          Corrected a problem in function 1BH (27).  IBUFR - IFREE will now
+          yield (always) the number of bytes in the receive buffer.
+
+          I wish  to thank John  Bierrie for testing  the BIOS emulator,  a
+          major addition of this version described below.
+
+          A BIOS emulator for INT  14h was added.  This BIOS  emulator will
+          allow many programs that are not FOSSIL aware, such  as BBS DOORS
+          programs,  to operate.  The addition of this feature also changes
+          the  way that X00  passes on INT  14h calls for  serial I/O ports
+          that are not currently active (FOSSIL active).
+
+          In previous versions of X00, all INT 14h  calls to inactive ports
+          were  passed on to  BIOS's INT 14h  routine.  If you  wish X00 to
+          continue to operate as it has with previous versions, add USEBIOS
+          to the DEVICE=X00.SYS command line.
+
+          USEBIOS is  sort of a halfway  CAPTURE OFF.  Most  users will NOT
+          want to use this directive.  If USEBIOS  is in effect and X00 can
+          not figure out what to  do with an INT 14h call, the call will be
+          passed on  to BIOS.  If USEBIOS is specified, many DOORS programs
+          will have problems (especially under DESQview).
+
+          Unless overridden  with the USEBIOS directive  or XU CAPTURE:OFF,
+          this version of X00 will process all INT 14h calls.  If  the port
+          is FOSSIL active then the FOSSIL  specification will be followed.
+          If the port is not FOSSIL active than the BIOS INT 14h rules will
+          be followed except as follows:
+
+          1 - The port address mapping will remain in effect.   That is, if
+          you  have mapped port  0 (COM1) to  0280h then the  BIOS emulator
+          will use 0280h for the address of COM1.
+
+          2 - 16550 support is maintained.
+
+          3 - Locked baud rates are maintained.
+
+          4  -  BIOS functions  1 and  2  (transmit and  receive character)
+          specify a timeout.   However, I could not find  any documentation
+          on  what the timeout is supposed  to be.  I have  set a 30 second
+
+
+
+
+
+
+
+          timeout for both functions  1 and 2.   As the BIOS  specification
+          requires, a timeout is indicated by  the high bit of AH being set
+          to 1 upon return from function 1 or 2.  If function 1 or 2 return
+          with the high bit of AH set, the remainder of the returned status
+          is not valid.  Use function 3 for accurate status in this case.
+
+          5 - The  BIOS emulator will  support up to 8  ports while a  real
+          BIOS only supports 2 (4 on some).
+
+          By default, X00 will now update BIOS ram to reflect the existence
+          of up to 4 SIO ports at initialization.   Previously, the program
+          POSTPORT was  needed for this  function.  Additionally,  X00 will
+          put the port addresses in BIOS ram in the same order and with the
+          same port addresses that have been assigned (or defaulted) by the
+          user.   This means  that programs that  use COM1 via  DOS or BIOS
+          will address the  same port as  X00's port 0  etc.  This  feature
+          will allow many programs to work when non standard port addresses
+          are  used.  A  new command line  option NOPOST has  been added to
+          override this feature.
+
+          If you wish  this version of X00 to handle BIOS  ram and BIOS INT
+          14h calls as previous  versions, you must add USEBIOS  and NOPOST
+          to the command line in your CONFIG.SYS file.
+
+          A  new utility (XU.EXE) has  been added in  the distribution file
+          and several utilities have  been eliminated.  XU allows  the user
+          to  change most operational  characteristics of X00  such as baud
+          rate  locking and  unlocking.    If  you use  XU  to  change  the
+          operational characteristics  of a FOSSIL active  port within X00,
+          the change will not take effect until the port is deactivated and
+          re-activated.  Note  that you  can deactivate  and re-activate  a
+          port with XU itself.
+
+          I wish to thank Bob Juge and Bob Davis for testing a rats nest of
+          doors programs with this version of X00.
+
+          A point about FOSSIL function 1Bh (27).  The FOSSIL specification
+          states  that the  baud rate  returned by  this call  reflects the
+          computer to modem  baud rate.   X00 supports baud rates  that are
+          not  allowed by  the  FOSSIL specification  and cannot  correctly
+          reflect the computer  to modem baud rate.  When function 1Bh (27)
+          is called, X00 returns the baud rate that the application program
+          last attempted to set using FOSSIL function 0.
+
+          A point  about  programs that  have their  own interrupt  drivers
+          (like DSZ).  The  port that the program  is to use should  NOT be
+          FOSSIL active.  If the port is left FOSSIL active, X00 will cause
+          interference.
+
+          Additional locked  baud rates of  115200, 28400 and  57600 (58kb)
+          have  been added.   The total list  of lockable baud  rates is in
+          X00.DOC.
+
+          Starting with version 1.21g of X00, FOSSIL functions 1 and 2 have
+
+
+
+
+
+
+
+          a 30 second timeout.  Normally these functions will return status
+          in AX.   The status  returned is the  same as returned  by FOSSIL
+          function 3.  Under  normal conditions, the high bit will never be
+          on in  the returned status.   However,  if a timeout  occurs, the
+          high bit  of AX  will be  set and the  remaining status  bits are
+          undefined.   This is  not something I  dreamed up, it  is the way
+          that (IBM and most other) BIOS INT 14h works.   I discovered this
+          when I added the BIOS INT 14h emulator.  I could not determine  a
+          value  (defacto standard) for the timeout.  I arbitrarily set the
+          timeout to 30 seconds.
+
+          ********NOTICE******    The   default  port  addresses  and   IRQ
+          assignments for COM3 and COM4 have been changed to match COM3 and
+          COM4 on the PS/2.  If you were depending on the old defaults, you
+          must  change your X00 command  line to provide  the port address.
+          The  previous defaults were COM3 at 3E8h  using IRQ 4 and COM4 at
+          2E8h using IRQ 3.  You can execute XU S to see the new defaults.
+
+          X00 now acknowledges  the existence  of COM5 through  COM8.   The
+          PS/2 address and IRQ assignments are used for those ports.
+
+          The  file size  of X00  is larger  however, the  amount remaining
+          resident after initialization is smaller.
+
+          X00 now detects the existence of the Intel 82510 chip  which is a
+          FIFOed version  of the 8250 etc.  The code  the use the FIFOs has
+          not been added.  I  believe the 16550A is still the  best choice.
+          The 82510 is used by a lot of lap tops.
+
+          Previous  versions of X00 monitored  the comm port  too much when
+          WATCHCD was  in effect  for a  port.   This caused  problems with
+          other interrupt driven programs  like DSZ.  The problem  has been
+          corrected in this version.
+
+          This version of X00 will load either as a TSR or a device driver.
+          To  use X00 as  a TSR, rename  X00.SYS to X00.EXE  and execute it
+          with the  same command line parameters.   If you wish  to have it
+          both ways, you can leave X00 named X00.EXE and still load it as a
+          device driver using DEVICE=X00.EXE in the config.sys file.
+
+          If  X00 is  loaded as  a TSR,  it can  be un-installed  by simply
+          executing X00  with no parameters.  If you want to make sure that
+          you  do not accidently un-install X00, execute it with a harmless
+          parameter.   For  example X00 E.   If  a copy  of X00  is already
+          resident, another  copy  will not  be loaded  and the  parameters
+          specified  have no  effect  on the  previously  loaded X00.    XU
+          commands  are  the  only   method  of  changing  the  operational
+          characteristics of a previously  loaded X00.  In the  near future
+          XU  will be able to change any of the operational characteristics
+          of X00.
+
+          X00 will refuse to un-install under certain conditions.  Usually,
+          this is because another program has been loaded after X00 and the
+          interrupt vectors cannot be restored without the possibility of a
+
+
+
+
+
+
+
+          system  crash.   However,  X00  will un-install  with  hot FOSSIL
+          ports.  So, all of your  FOSSIL comm programs should be shut down
+          prior to un-installing.
+
+          Loading  of  multiple copies  of  X00  inside different  DESQview
+          windows is  allowed.  The method I used should work on any multi-
+          tasking system.  However, I have only tested under DESQview.
+
+          The TSRing  of X00 has not had a  lot of testing.  Please provide
+          feedback if you have  problems.  Before providing the  feed back,
+          please  attempt to  insure  that it  is not  pilot error.   Think
+          through what you are attempting to do.  If you are using a multi-
+          tasker, look over the  configuration for the window and  think it
+          through.
+
+          The  HLLAPI routines have NOT  been updated to  recognize a TSRed
+          X00.
+
+          BOB  version 0.04 (released with  this version) will  work with a
+          TSRed X00.  A problem in  BOB with monitoring of ports other than
+          0 has been corrected.
+
+          Earlier versions of XU refused to work on DOS versions below 3.1.
+          This was a code left  over from a previous program.  XU  will now
+          work on any DOS version above 2.00.
+
+          X00 will refuses to load high as a  TSR.  I have not yet found  a
+          foolproof way to locate a TRSed  X00 when it is loaded high.   If
+          X00  is allowed  to load  high as a  TSR, XU  may not  be able to
+          locate it.  Worse, X00 may install itself twice.
+
+          A comment to  those that are attempting to get  a CTTY command to
+          work in  DESQview.  I  have had some  success by  configuring the
+          window to enable Printer Management.
+
+          A comment to those that use GATEWAY.  On my system, I got GATEWAY
+          to work  by adding XU  PORT:n:ON.  Note that  n for XU  is 1 less
+          than the n in  GATEn.  You may have to issue  an XU PORT:n:OFF at
+          the end of the redirection.
+
+          Revision history prior to V1.20 has been deleted from this file.
+
+          V1.22A
+          X00 V1.22  would not un-install  from the OS/2  compatibility box
+          gracefully.  V1.22A corrects this problem.
+
+          The  HLLAPI routines are not in the  V1.22A distribution file.  I
+          will  add  them  back to  the  distribution  file  when they  are
+          upgraded to work with a TSRed X00.
+
+
+
+
+
+
+
+          V1.24
+
+          It seems  the change to use  the PS/2 defaults for  COM3 and COM4
+          has caused many problems.   Simply checking for the  existence of
+          the  ports using the PS/2  addresses caused problems  on non PS/2
+          systems.   Those  that read  the  documentation and  tried NOPOST
+          probably did not have a problem.
+
+          X00 now  detects that it is working on  a PS/2 or compatible.  If
+          the host system is a PS/2,   then the PS/2 port address for  COM3
+          and COM4  are used as the  defaults port addresses.   If the host
+          system  is not a PS/2,  then the defacto  standard port addresses
+          for COM3 and COM4 are used as the default port addresses.
+
+          V1.22n  of X00 enabled  the FIFOs of  the 16550a (et  al) at load
+          time.   This was done  at the request of several  users.  At load
+          time, X00  does not  know which  comm ports will  be used  so all
+          16550's FIFOs were enabled.   However, some (dumb) communications
+          programs will not recognize the existence of a comm port that has
+          a 16550a installed with the FIFOs enables.  X00 no longer enables
+          the 16550's FIFOs  at load  time.   However, the  FIFOs are  left
+          enabled when X00 shuts down a FOSSIL active port.
+
+          The HLLAPI routines are now back in the distribution file but are
+          largely untested.  They should now correctly find and use a TSRed
+          X00.  Please report any problems that you find.  Future additions
+          will include selective tracing with BOB.
+
+          BOB  will now  write the  trapped communications  data to  a disk
+          file.   A program written by Bob Hartman called ANALYZER.EXE will
+          convert the BOB  files to text.  ANALYZER.EXE is  included in the
+          BOB.ZIP  file.   See  the HISTORY.TXT  file  in BOB.ZIP  for more
+          information.
+
+          I am  somewhat dismayed to note that the X00 distribution file is
+          now over 100k.
+
+
+
+
+
+
+
+
+          A FidoNet  echomail conference  tagged X00_USER is  now available
+          from the FidoNet Backbone.  This conference is intended for users
+          of  X00  to exchange  solutions to  problems.   Additionally, the
+          conference  should eliminate the need  for me to  answer the same
+          questions from several users via net-mail.
+
+          An  embarrassing problem in flow control has been corrected.  The
+          lower end threshold  was not  being checked correctly.   The  net
+          effect was that receiver was being enabled after only a few bytes
+          were taken from the buffer.   This problem has been in X00  for a
+          long time and explains some speed comparisons reports that I have
+          received.
+
+          X00  now detects the processor types 808x, V20/V30, 8018x, 80286,
+          80386 and 80486.  Based on the processor type, X00 selects one of
+          three  routines  to  service  communications  interrupts.    808x
+          processors have there own interrupt routine.   8018x and V20/V30s
+          share a second routine.  80286,  80386 and 80486 share the  third
+          interrupt  routine.   The use  of three different  routines allow
+          processor  specific  instructions to  be  used,  which result  in
+          faster  execution.    The manner  that  I  implemented the  three
+          individual interrupt service  routines requires approximately 100
+          bytes of additional code.
+
+          Strangely  enough, users of 808x  and V20/V30s will  see the most
+          dramatic increase  in speed  of serial communications  when using
+          high speed modems.
+
+          Users of other  processors will probably not  notice any increase
+          in  speed.    However,  the  overhead  caused  by  communications
+          interrupts will be reduced.
+
+          Some correction have been made to the HLLAPI routines.  The C and
+          Quick Basic HLLAPIs are no longer X00 specific.
+
+
+
+
+
+
+
+
+          For those that believe  that larger buffers mean faster  I/O, you
+          will be glad  to know that  X00 is no  longer limited to  a total
+          size of 64k.  The sum total of the buffer sizes for a single port
+          can be up  to 48k.  If you are using  a slow computer, be sure to
+          try a small buffer (256 bytes or so).  Many times, a small buffer
+          on a slower computer will yield better throughput.
+
+          Two problems were corrected in BOB.  One problem would cause some
+          systems to crash.   The  other problem  was that  BOB would  stop
+          monitoring a port if an active port was re-activated.   Both have
+          been corrected.
+
+
+
+
+
+
+
+
+
+          V1.49
+
+          I jumped the version numbers from  1.24 to 1.49a to skip over the
+          bogus 1.30.
+
+          Changes were  made so that  OS2 would not  get upset when  X00 is
+          loaded in a DOS partition.
+
+          An error in the HLLAPI routines was corrected.  The first call to
+          X00 was previously lost.
+
+          The routines that detect  SIO chip type(s) were changed so as not
+          to screw up some 8250 emulation parts on some chip sets.
+
+          IRQ2 is  now handled somewhat diffreently.   Some may now be able
+          to use IRQ2 for serial ports.
+
+          -------------------------------
+
+          Ray Gwinn
+

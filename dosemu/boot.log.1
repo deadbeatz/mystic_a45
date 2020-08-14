@@ -2,14 +2,15 @@ FDPP kernel 1.0rc3 [GIT: ] (compiled Aug 13 2020)
 fdpp: plugin loaded
 CONF: Parsing built-in dosemu.conf file.
 CONF: Parsing /etc/dosemu/dosemu.conf file.
+CONF: Parsing /home/analog/.dosemu/.dosemurc file.
 CONF: Parsing built-in global.conf file.
 CONF: mapping driver = 'auto'
 debug flags: -a+cw
 CONF: Disabling use of pentium timer
 CONF: dosbanner on
 CONF: timer freq=18, update=54925
-CONF: CPU set to 586
-CONF: JIT CPUEMU set to 0 for 586
+CONF: CPU set to 486
+CONF: JIT CPUEMU set to 3 for 486
 CONF: CPU VM set to -1
 CONF: CPU VM set to -1 for DPMI
 CONF: 8192k bytes EMS memory
@@ -23,7 +24,9 @@ CONF: 8192k bytes XMS memory
 CONF: dosemu not running on console
 CONF: time mode = 'bios'
 SER: directory /var/lock namestub LCK.. binary No
+SER0: /dev/pts/1
 MOUSE: /dev/input/mice, type 7 using internaldriver: yes, emulate3buttons: no baudrate: 0
+CONF: Keyboard-layout us
 CONF: **** Warning: floppy /dev/fd0 not accessible, disabled
 CONF: fastfloppy = 1
 default_drives 0
@@ -58,22 +61,19 @@ ERROR: KVM: error opening /dev/kvm: No such file or directory
 KVM not available: No such file or directory
 using CPU emulation for vm86()
 initial register values: fs: 0x0000  gs: 0x0000 eflags: 0x0246
-initial segment bases: fs: 0x7f395506b740  gs: (nil)
+initial segment bases: fs: 0x7f4fd131b740  gs: (nil)
 CONF: reserving 128Kb at 0xA0000 for 'v' (Video memory)
-Conventional memory mapped from 0x7f394fff0000 to 0x41bb9000
-DPMI memory mapped to 0x41cc9000 (reserve) and to 0x43cc9000 (main)
+Conventional memory mapped from 0x7f4fcc2a0000 to 0x405ca000
+DPMI memory mapped to 0x406da000 (reserve) and to 0x426da000 (main)
 CONF: reserving 8256Kb at 0x100000 for 'x' (Extended memory (HMA+XMS))
 VID: Video set to Video_term
-Registering HWRAM, type=e base=0x410d7000 size=0x400000
-CONF: reserving 4096Kb at 0x410D7000 for 'e' (VGAEMU LFB)
+Registering HWRAM, type=e base=0x4a8d0000 size=0x400000
+CONF: reserving 4096Kb at 0x4A8D0000 for 'e' (VGAEMU LFB)
 loading fonts for cp437
 CONF: reserving 4Kb at 0xC0000 for 'V' (VGAEMU Video BIOS)
 SERIAL $Id$
-fluidsynth sound font unavailable at share/soundfonts/default.sf2
-ERROR: alsa_midi (ALSA lib): seq_hw.c:466:(snd_seq_hw_open) : No such file or directory open /dev/snd/seq failed
-DPMI: mem init, mpool is 136273920 bytes at 0x43cc9000
-ERROR: Unable to open console or check with X to evaluate the keyboard map.
-Please specify your keyboard map explicitly via the $_layout option. Defaulting to US.
+registering /dev/pts/1 for serial
+DPMI: mem init, mpool is 136273920 bytes at 0x426da000
 TIME: using 9154 usec for updating ALRM timer
 ======================= ENTER CPU-EMU ===============
 

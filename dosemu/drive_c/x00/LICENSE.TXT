@@ -1,0 +1,114 @@
+
+
+
+
+
+
+
+
+                                 X00 Licensing Terms
+
+          Copyright (C) 1987, 1988,  1989, 1990 by Raymond  L. Gwinn.   ALL
+          RIGHTS  RESERVED. COMMERCIAL  DISTRIBUTION AND/OR  USE PROHIBITED
+          WITHOUT WRITTEN PERMISSION FROM RAYMOND L. GWINN.
+
+          Non-Commercial distribution  and/or  use is  permitted under  the
+          following terms:
+
+          1. You may  copy and  distribute verbatim  copies of  X00 as  you
+          receive it,  in any medium,  provided that you  conspicuously and
+          appropriately  publish  on each  copy  a  valid copyright  notice
+          "Copyright  (C)  1987,  1988, 1989,  1990,  1991,  1992, 1993  by
+          Raymond  L. Gwinn";  keep intact  the notices  on all  files that
+          refer  to  this  License Agreement  and  to  the  absence of  any
+          warranty;   PROVIDE  UNMODIFIED  COPIES OF  THE DOCUMENTATION  AS
+          PROVIDED WITH THE PROGRAM; and give any other recipients of X00 a
+          copy of this License  Agreement along with the program.   You may
+          charge  a distribution fee for the physical act of transferring a
+          copy, but no more than is  necessary to recover your actual costs
+          incurred in the  transfer. Under  no circumstances is  X00 to  be
+          distributed in such a way as to be construed as  "value added" in
+          a sales  transaction,  such  as,  but not  limited  to,  software
+          bundled with a modem or CD-ROM software collections.
+
+          2.  Mere  aggregation  of  another unrelated  program  with  this
+          program  (or  its  derivative)  on  a  volume  of  a  storage  or
+          distribution medium does  not bring the  other program under  the
+          scope of these terms. 
+
+          3.  You  may not  copy,  sublicense, distribute  or  transfer X00
+          except  as expressly provided under this  License Agreement.  Any
+          attempt otherwise to copy, sublicense, distribute or transfer X00
+          is  void and your  rights to use  the program under  this License
+          agreement  shall be automatically  terminated.   However, parties
+          who have received computer software  programs from you with  this
+          License Agreement will not have their licenses terminated so long
+          as such parties remain in full compliance, and notify the Authors
+          of their intention to comply with this Agreement. 
+
+          4.  If you  wish to  include X00  with other free  programs whose
+          distribution conditions are different, please contact  Raymond L.
+          Gwinn at the addresses listed below.  A simple rule,  that can be
+          stated here,  has not been  worked out, but this  will usually be
+          permitted.
+
+          5. For the purposes of this document, "COMMERCIAL USE" is defined
+          as concurrent operation of the software on four or more computers
+          or  data  lines owned  by the  same for-profit  organization. Any
+          organization may  operate this software  under the terms  of this
+          Non-Commercial Agreement if operation is limited to three or less
+          computers or data lines.
+
+
+
+
+
+
+
+                                   NO WARRANTY
+
+          BECAUSE X00 IS LICENSED FREE OF CHARGE, ABSOLUTELY NO WARRANTY IS
+          PROVIDED.  EXCEPT  WHEN OTHERWISE STATED  IN WRITING, RAYMOND  L.
+          GWINN   AND/OR OTHER PARTIES PROVIDE X00 "AS IS" WITHOUT WARRANTY
+          OF  ANY KIND,  EITHER EXPRESSED  OR  IMPLIED, INCLUDING,  BUT NOT
+          LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+          FOR A PARTICULAR PURPOSE.  THE  ENTIRE RISK AS TO THE QUALITY AND
+          PERFORMANCE OF X00 IS WITH YOU.   SHOULD X00 PROVE DEFECTIVE, YOU
+          ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+
+          IN NO EVENT WILL RAYMOND L. GWINN AND/OR ANY OTHER  PARTY WHO MAY
+          REDISTRIBUTE  X00  AS  PERMITTED  ABOVE,  BE  LIABLE  TO YOU  FOR
+          DAMAGES,  INCLUDING  ANY  LOST  PROFITS, LOST  MONIES,  OR  OTHER
+          SPECIAL, INCIDENTAL  OR CONSEQUENTIAL DAMAGES ARISING  OUT OF THE
+          USE OR INABILITY  TO USE (INCLUDING  BUT NOT LIMITED  TO LOSS  OF
+          DATA  OR DATA BEING  RENDERED INACCURATE  OR LOSSES  SUSTAINED BY
+          THIRD PARTIES  OR A  FAILURE OF THE  PROGRAM TO OPERATE  WITH ANY
+          OTHER  PROGRAMS)  X00,  EVEN IF  YOU  HAVE  BEEN  ADVISED OF  THE
+          POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY.
+
+
+
+          The Author can be reached at the following address:
+
+          Raymond L. Gwinn
+          12469 Cavalier Drive
+          Woodbridge, Virginia 22192
+
+          FidoNet  1:265/104 (Routed mail only)
+          Compuserve 72570,157
+          Internet 72570.157@Compuserve.com
+          Data    (703) 494-0098
+          FAX     (703) 494-0595
+            
+          Please feel free to contact me at any time to share your comments
+          about X00 and/or licensing policies.
+
+          My  thanks  to Vincent  Perriello  for permission  to  modify the
+          BinkleyTerm License  agreement into a license  agreement for X00.
+          The  following credit is in the BinkleyTerm license agreement and
+          is unmodified.
+
+          Our thanks to Richard Stallman and the  Free Software Foundation,
+          Inc., for most of the wording of this License.
+

@@ -13,7 +13,7 @@ NODE=$BBSROOT/temp$1
 unix2dos $NODE/DOOR.SYS 2>/dev/null
 
 # Define root directory for DOSEMU hdd
-DROOT=/home/<USERHERE>/.dosemu/drive_c/nodes/temp$1
+DROOT=/home/analog/.dosemu/drive_c/nodes/temp$1
 
 # Define node directory inside DOSEMU filesystem
 cp $NODE/DOOR.SYS $DROOT/DOOR.SYS
@@ -21,7 +21,6 @@ cp $NODE/DOOR.SYS $DROOT/DOOR.SYS
 
 # Generate a random lowercase 4 digit code for batch file uniqueness
 RAND=$(tr -dc a-f0-9 2>/dev/null  </dev/urandom | head -c 4)
-
 FILE=RUN$RAND.BAT
 
 # Convert to lowercase for linux
@@ -38,10 +37,11 @@ run_batch(){
 
 case "$DOOR" in
     dark)
-        echo -e '\r@echo off \r' > $DROOT/$FILE
+        #echo -e '\r@echo off \r' > $DROOT/$FILE
         echo -e 'c: \r' >> $DROOT/$FILE
         echo -e 'cd c:\\doors\\darkness\\ \r' >> $DROOT/$FILE
         echo -e 'dark16 /n'$1' \r' >> $DROOT/$FILE
+        echo -e 'c:\\sleep 3 \r' >> $DROOT/$FILE
         echo -e 'exitemu' >> $DROOT/$FILE
         unix2dos $DROOT/$FILE 2>/dev/null
         run_batch $1 $FILE $DROOT

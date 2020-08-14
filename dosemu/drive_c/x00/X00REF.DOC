@@ -1,0 +1,1634 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   Functions reference manual for the X00 developer
+
+                  X.00 A Low Level Serial I/O Communications Driver
+                        for MS DOS and like Operating Systems.
+
+                        Copyright (c) 1993 by Raymond L. Gwinn
+                                 12469 Cavalier Drive
+                              Woodbridge, Virginia 22192
+                                 All Rights Reserved
+
+                                     May 22, 1993
+
+
+                   Fidonet address 1:265/104 (Routed Netmail only)
+                                 Compuserve 72570,157
+                          Internet 72570.157@Compuserve.com
+                                   FAX 703-494-0595
+
+
+
+
+
+
+
+                                                                          i
+
+
+                                     INTRODUCTION
+
+          Previously,  the documentation  for X00  was  little more  than a
+          collection  of notes.  The notes were added to as the development
+          process continued and enhancements were made.  I honestly did not
+          suspect that  X00 would become  as widely  used as it  is.   This
+          manual is an attempt at some decent documentation for X00.
+
+          But who do  I document for?   The user that  is setting up a  BBS
+          just wants to get X00 installed and to move on  to more important
+          things.  The user that is having problems needs information about
+          serial  I/O communications  in general  and the  PC specifically.
+          The application developer (programmer) needs detailed information
+          about each individual function and the information generated.
+
+          This manual is  intended as  a reference for  use by  application
+          programmers who desires  to use X00.  A separate  Users manual is
+          included in the distribution file(s).
+
+          This manual and the software distributed with it is provided with
+          no guarantees.  Use at your own risk.
+
+
+
+
+
+
+
+                                                                         ii
+
+
+          WHAT IS X00 . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+          Warranty  . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+          Licensing Information . . . . . . . . . . . . . . . . . . . .   2
+               Non-Commercial License . . . . . . . . . . . . . . . . .   2
+               Commercial License . . . . . . . . . . . . . . . . . . .   2
+
+          Functions . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+               Function 00h - Set communications parameters . . . . . .   4
+               Function 01h - Transmit character and wait . . . . . . .   5
+               Function 02h - Get received character with wait  . . . .   5
+               Function 03h - Return Serial Port Status . . . . . . . .   6
+               Function 04h - Activate Port . . . . . . . . . . . . . .   7
+               Function 05h - Deactivate Port . . . . . . . . . . . . .   8
+               Function 06h - Raise/lower DTR . . . . . . . . . . . . .   8
+               Function 07h - Return timer tick information . . . . . .   9
+               Function 08h - Flush output buffer . . . . . . . . . . .   9
+               Function 09h - Purge output buffer . . . . . . . . . . .   9
+               Function 0Ah - Purge input buffer  . . . . . . . . . .    10
+               Function 0Bh - Transmit no wait  . . . . . . . . . . .    10
+               Function 0Ch - Non-destructive read-ahead (Peek) . . .    10
+               Function 0Dh - Keyboard read without wait  . . . . . .    11
+               Function 0Eh - Keyboard read with wait . . . . . . . .    11
+               Function 0Fh - Flow Control for serial I/O . . . . . .    12
+                    Xon/Xoff flow control . . . . . . . . . . . . . .    12
+                    RTS/CTS flow control  . . . . . . . . . . . . . .    12
+               Function 10h - Control-C / Control-K checking  . . . .    13
+               Function 11h - Set current cursor location . . . . . .    13
+               Function 12h - Read current cursor location  . . . . .    14
+               Function 13h - Single character ANSI write to screen .    14
+               Function 14h - Enable or disable the DCD watchdog  . .    14
+               Function 15h - Write character to screen using BIOS  .    15
+               Function 16h - Add  or delete a routine from  the timer
+                    tick  . . . . . . . . . . . . . . . . . . . . . .    15
+               Function 17h - Reboot system . . . . . . . . . . . . .    16
+               Function 18h - Block Read  . . . . . . . . . . . . . .    16
+               Function 19h - Block Write . . . . . . . . . . . . . .    16
+               Function 1Ah - Break begin or end  . . . . . . . . . .    17
+               Function 1Bh - Return information about X00  . . . . .    18
+
+          Superset Functions  . . . . . . . . . . . . . . . . . . . .    19
+               Function 1Ch - Activate Port . . . . . . . . . . . . .    20
+               Function 1Dh - Deactivate Port . . . . . . . . . . . .    21
+               Function 1Eh - Extended line control initialization  .    22
+               Function 1Fh - Extended serial port status/control . .    23
+               Function 20h - Read with no wait (destructive) . . . .    24
+               Function 21h - Stuff/Poke the receive buffer . . . . .    24
+
+          "Layered Application" services  . . . . . . . . . . . . . .    25
+               Function  7Eh  -  Install  an   "external  application"
+
+
+
+
+
+
+
+                                                                        iii
+
+                    function  . . . . . . . . . . . . . . . . . . . .    25
+               Function  7Fh  -   Remove  an  "external   application"
+                    function  . . . . . . . . . . . . . . . . . . . .    26
+
+          Application Notes . . . . . . . . . . . . . . . . . . . . .    27
+               Which Activate/Deactivate functions to use . . . . . .    27
+               Watch out for disk I/O . . . . . . . . . . . . . . . .    27
+               Successive timer tick calls  . . . . . . . . . . . . .    28
+
+
+
+
+
+
+
+                                                                          1
+
+
+                                     WHAT IS X00
+
+          X00 is  a Serial  Input/Output (SIO) communications  driver.   It
+          provides  an interface  between  an application  program and  the
+          serial communications hardware.
+
+          X00 was originally  designed as a  FOSSIL driver.   FOSSIL is  an
+          acronym  containing the first character of several communications
+          programs.  The FOSSIL specification  is basically an extension of
+          the PC's BIOS services for serial communications.
+
+          Except as  noted in the this Manual, X00 meets the FOSSIL level 5
+          specification.   X00 provides  additional functions that  are not
+          contained in the FOSSIL level 5 specification.
+
+          X00 only works with 8250 (TYPE) serial I/O devices.  Such devices
+          include the  8250A, 16450, 16550, 16550A  and the 82510.   If you
+          have a PC that  is an IBM or near  compatible which has a  serial
+          communication  port, it is likely  that it contains  one of these
+          devices.  XU, a  utility distributed with X00, will  identify the
+          existence of compatible SIO devices.
+
+          Like  other Device  Drivers,  X00 will  do  very little  standing
+          alone.  There must be an application(s) program to use X00 before
+          you will gain benefit.
+
+          Since  the introduction  of the  FOSSILs, a  great number  of new
+          communications  programs  have come  into existence.   I  like to
+          think  that the FOSSILs are  largely responsible for  this.  Many
+          programs that contain their own communications drivers have added
+          FOSSIL support.  One notable example is RBBS.
+
+          Many  programs  written  to   use  BIOS's  serial  communications
+          services will also work with X00.   This gives those programs the
+          benefits of buffered interrupt driven I/O.
+
+          Warranty
+
+          There is none.  Use X00 your own risk.
+
+
+
+
+
+
+
+                                                                          2
+
+
+                                Licensing Information
+
+          Non-Commercial License:
+
+          A  non-commercial license  for  use of  X00  is included  in  the
+          distribution file called LICENSE.TXT.
+
+          Commercial License:
+
+          See Users Reference manual.
+
+
+
+
+
+
+
+                                                                          3
+
+
+                                      Functions
+
+          X00  functions are  designed to  be  called by  assembly language
+          programs.    Some  rudimentary  High Level  access  routines  are
+          provided  in  the  X00  distribution files.    These  rudimentary
+          routines are the so called HLLAPI files.
+
+          Parameters for all  X00 functions  are passed in  the basic  808x
+          registers.    In  most cases  the  results  of  the function  are
+          returned  in registers.    If  no  parameter  is  returned  in  a
+          register,  X00 will return the register  unchanged except for the
+          AX register.   If no information is returned in  the AX register,
+          then its contents upon return from a function is undefined.
+
+          Many  (most) of the X00 functions require a port number be passed
+          in  the DX register.  Port numbers start at 0 (zero).  Port 0 and
+          COM1  are normally the same.  However, this relationship must not
+          be assumed.  It is possible for the X00 user to re-map the  ports
+          on their  systems.  Please  refer to  the Users  Manual for  more
+          information.
+
+          I  have  noted that  some  application programs  are  calling X00
+          functions from  the timer tick.   This should be done  with care.
+          If  the X00 DV option is enabled  at load time, X00 could issue a
+          DESQview Pause command as a result  of your call.  I am  not sure
+          what  the results of this would be, but it points out the type of
+          consideration that  should be done before  issuing function calls
+          from the timer tick.
+
+
+
+
+
+
+
+                                                                          4
+
+
+
+
+
+
+
+
+          Function 00h - Set communications parameters, baud, parity etc.
+
+               Input:    AH = 00h
+                         AL = Communications parameters (defined below)
+                         DX = Port number
+
+               Output:   AX = Port status (see function 03h)
+
+          This function is identical to the IBM PC INT 14h BIOS call except
+          that  110 baud and 150 baud have  been replaced by 19200 baud and
+          38400 baud respectively.  The high order 3 bits of AL specify the
+          baud rate  as follows:  See functions 1Eh and 1Fh for an enhanced
+          version of this function.
+
+                         010 =   300 baud
+                         011 =   600  ''
+                         100 =  1200  ''
+                         101 =  2400  ''
+                         110 =  4800  ''
+                         111 =  9600  ''
+                         000 = 19200  '' (Replaces IBM 110 baud setting)
+                         001 = 38400  '' (Replaces IBM 150 baud setting)
+
+          The low order 5 of AL specify the following:
+
+               Bits 4-3 define parity:       0 0  no parity
+                                             1 0  no parity
+                                             0 1  odd parity
+                                             1 1  even parity
+
+               Bit 2 defines stop bits:      0    1 stop bit;
+                                             1    1.5 bits for 5-bit codes,
+                                                  2 for others
+
+               Bits 1-0 character length:    0 0  5 bits
+                                             0 1  6 bits
+                                             1 0  7 bits
+                                             1 1  8 bits
+
+
+
+
+
+
+
+                                                                          5
+
+
+          Function 01h - Transmit character and wait.
+
+               Input:    AH = 01h
+                         AL = Character
+                         DX = Port number
+
+               Output:   AX = Port status (see function 03h)
+
+          Upon  entry to this function, AL must contain a character that is
+          to be transmitted.   If there is room in the transmit buffer, the
+          character  buffered.   Otherwise, this  function will  loop until
+          their is  room in the buffer or until  a timeout occurs.  If set,
+          the high  order bit of  the returned status indicates  a time out
+          occurred.   See function 03h.   At the time of  this writing, the
+          timeout is set to 30 seconds.
+
+          Note:  X00 executes functions with  the interrupt mask  set as it
+          was  when entered.   That is,  if X00  is called  will interrupts
+          masked, interrupts will  remain masked during  the processing  of
+          the function.  If this function is called with interrupts masked,
+          it may never return.
+
+          -----------------------------------------------------------------
+
+          Function 02h - Get received character with wait.
+
+              Receive character with wait
+
+               Input:    AH = 02h
+                         DX = Port number
+
+               Output:   AH = Line status (same AH returned by function 3)
+                         AL = Input character
+
+          If  a character is available in the receive buffer, this function
+          returns the next character from the  receive buffer in AL.  If no
+          receive character is available, this  function will wait until  a
+          character is received or  until a timeout occurs.   If a  timeout
+          occurs,  the high order bit of  AH will be set  upon return.  See
+          function 03h.   At the time of this writing, the timeout value is
+          set to 30 seconds.
+
+          Note:  X00 executes functions with  the interrupt mask  set as it
+          was when  entered.   That is,  if X00  is called  will interrupts
+          masked, interrupts will  remain masked during  the processing  of
+          the function.  If this function is called with interrupts masked,
+          it may never return.
+
+          Function 20h is a get character with no wait.
+
+
+
+
+
+
+
+                                                                          6
+
+
+
+
+
+
+          Function 03h - Return Serial Port Status.
+
+               Input:    AH = 03h
+                         DX = Port number
+
+               Output:   AX = Status bits as follows:
+
+                    AH = Line Status, where:
+                         Bit 0 = RDA  - input data is available in buffer
+                         Bit 1 = OVRN - the input buffer has been overrun
+                         Bit 2 = Reserved (Parity error in BIOS INT 14h)
+                         Bit 3 = Reserved (Framing error in BIOS INT 14h)
+                         Bit 4 = Reserved (Break detect in BIOS INT 14h)
+                         Bit 5 = THRE - room is available in output buffer
+                         Bit 6 = TSRE - output buffer is empty
+                         Bit 7 = Timeout (set by functions 1 and 2 only)
+
+          Bit 7 of AH IS ALWAYS ZERO WHEN RETURNED BY FUNCTION 3.  Bit 7 of
+          AH may be  set to one by other functions (like 1 and 2) that also
+          return status.  When bit 7 of AH is set to one, none of the other
+          15 bits returned in AX are valid.
+
+                    AL = Modem status, where:
+                         Bit 0 = Delta clear to send (not reliable)
+                         Bit 1 = Delta data set ready (not reliable)
+                         Bit 2 = Delta data carrier detect (not reliable)
+                         Bit 3 = Always set to 1 upon return (DUMMY DCD)
+                         Bit 4 = Clear to send (CTS)
+                         Bit 5 = Data set ready (DSR)
+                         Bit 6 = Ring indicator (RI)
+                         Bit 7 = Data carrier detect (DCD)
+
+          Bit  3  of AL  is  always  returned  set  to  1.    This  enables
+          application programs  to use  bit 3  as a  carrier detect bit  on
+          hardwired (null modem) links.
+
+
+
+
+
+
+
+                                                                          7
+
+
+
+
+
+
+
+
+          Function 04h - Activate Port.
+
+               Input:    AH = 04h
+                         DX = port number
+
+               Output:   AX = 1954h if successful
+                         BL   =  maximum  function  number  supported  (not
+                         counting functions 7Eh and above)
+                         BH = rev of FOSSIL specification supported
+
+          This function instructs X00  to use the FOSSIL specification  for
+          the specified port.  Prior to issuing this function, any function
+          that  requires a port number  in DX be will  passed on to BIOS or
+          X00's  INT 14h BIOS emulator.  When this function  is called, all
+          interrupts   involved  in  supporting   the  communications  port
+          (specified in DX) are  set up for support by X00.   DTR is turned
+          on by this function.  The baud rate is NOT set or changed by this
+          function.
+
+          If an additional call  to this function occurs (2  Inits or Init,
+          Function nn, Init, etc.)  X00 will reset (clear) all  buffers and
+          all flow control is turned off.  Values returned in the registers
+          upon a re-init are the same as an initial init (defined above).
+
+          NOTICE:  At some  future date,  the author  intends to  make this
+          function identical to the PS/2's  function 4.  Function 1Ch  is a
+          duplicate of this function.  New or modified application programs
+          should  discontinue use  of this function  and use  the duplicate
+          (1Ch) function.
+
+          A section is the  application notes describes a simple  method of
+          determining  which Activate/Deactivate  function numbers  to use.
+          The described method should work on all FOSSIL implementations.
+
+
+
+
+
+
+
+                                                                          8
+
+
+
+
+
+
+          Function 05h - Deactivate Port.
+
+               Input:    AH = 05h
+                         DX = Port number
+
+               Output:   Nothing
+
+          This function  instructs X00  that it  should  no longer  process
+          calls for specified port (in  DX) using the FOSSIL specification.
+          If the port was never activated by function 4, then this function
+          is ignored.  Any  subsequent function calls, that require  a port
+          number  in  DX, will  be  passed  to BIOS  or  the  BIOS INT  14h
+          emulator.
+
+          NOTICE:  At some  future date  (July 1991  or later),  the author
+          intends to make this function identical to the PS/2's function 5.
+          Function 1Dh is  a duplicate of this  function.  New  or modified
+          application programs should discontinue use of this function  and
+          use the duplicate (1Dh) function.
+
+          A section is the  application notes describes a simple  method of
+          determining  which Activate/Deactivate  function numbers  to use.
+          The described method should work on all FOSSIL implementations.
+
+          -----------------------------------------------------------------
+
+          Function 06h - Raise/lower DTR.
+
+               Input:    AH = 06h
+                         AL = DTR state to set
+                         DX = Port number
+
+               Output:   Nothing
+
+          This function is used to control the DTR signal.   AL = 00h means
+          lower DTR (turn it off), and AL = 01h means to raise DTR (turn it
+          on).  No other function (except functions 04h and 1Ch) will alter
+          DTR.
+
+
+
+
+
+
+
+                                                                          9
+
+
+
+          Function 07h - Return timer tick information.
+
+               Input:    AH = 07h
+
+               Output:   AL = Timer tick interrupt number
+                         AH = Approximate interrupts per second (18 on IBM)
+                         DX = Approximate number of milliseconds per tick
+
+          This  function  is used  to determine  the characteristic  of the
+          timer tick for the computer.
+
+          Application  programs  can  use  information  returned  by   this
+          function to dynamically  set up  code that is  executed on  every
+          timer tick. 
+
+          -----------------------------------------------------------------
+
+          Function 08h - Flush output buffer.
+
+               Input:    AH = 08h
+                         DX = Port number
+
+               Output:   Nothing
+
+          This  function  is  used to  wait  until  any  pending output  is
+          transmitted.   It does not  return until all  buffered output has
+          been sent.  This function should be used with care.  Flow control
+          (documented  below) can  cause your  system hang  in a  tight un-
+          interruptable loop given the right circumstances.
+
+          Note:  X00 executes functions with  the interrupt mask  set as it
+          was when  entered.   That is,  if X00  is called will  interrupts
+          masked, interrupts  will remain  masked during the  processing of
+          the function.  If this function is called with interrupts masked,
+          it may never return.
+
+          -----------------------------------------------------------------
+
+          Function 09h - Purge output buffer.
+
+               Input:    AH = 09h
+                         DX = Port number
+
+               Output:   Nothing
+
+          This function  is used to  remove any buffered  output (transmit)
+          data.   Any  output  data remaining  in  the output  buffer  (not
+          transmitted yet) is discarded.
+
+
+
+
+
+
+
+                                                                         10
+
+
+
+
+          Function 0Ah - Purge input buffer.
+
+               Input:    AH = 0Ah
+                         DX = Port number
+
+               Output:   Nothing
+
+          This function is  used to  remove any  buffered input  (received)
+          data.    Any  input data  which  is  in  the  receive  buffer  is
+          discarded.
+
+          -----------------------------------------------------------------
+
+          Function 0Bh - Transmit no wait.
+
+               Input:    AH = 0Bh
+                         AL = Character
+                         DX = Port number
+
+               Output:   AX = 0001h - Character was buffered for xmit
+                         AX = 0000h - Character was not buffered
+
+          This is exactly  the same as  function 01h, except  that it  will
+          always  return immediately.    If X00  is  unable to  buffer  the
+          character  (the transmit  buffer is  full), a  value of  0000h is
+          returned in AX. If X00 accepts the character (room is available),
+          0001h is returned in AX.
+
+          -----------------------------------------------------------------
+
+          Function 0Ch - Non-destructive read-ahead (Peek).
+
+
+               Input:    AH = 0Ch    
+                         DX = Port number
+
+               Output:   AH = 00h if character is available
+                         AL = Next character if available
+                         AX = 0FFFFh = If no character is available
+
+          This function returns the next character from the receive buffer.
+          If the  receive buffer is empty,  0FFFFh is returned in  AX.  The
+          character   returned  remains   in  the   receive   buffer.  Some
+          programmers call this function "peek".
+
+          Function 20h is a destructive read with no wait.
+
+
+
+
+
+
+
+                                                                         11
+
+
+
+
+
+
+
+
+
+
+
+
+          Function 0Dh - Keyboard read without wait.
+
+
+               Input:    AH = 0Dh
+
+               Output:   AX = IBM-style scan code if available
+                            = 0FFFFh if no character not available
+
+          This  function  returns  the  keyboard  scan  code  of  the  next
+          character from  the keyboard.   This is a  non-destructive (peek)
+          read of  the keyboard.  If no keyboard data is available,  0FFFFh
+          is returned in AX.
+
+          -----------------------------------------------------------------
+
+          Function 0Eh - Keyboard read with wait.
+
+               Input:    AH = 0Eh
+
+               Output:   AX = Keyboard scan code
+
+          This  function  return  the  next character  available  from  the
+          keyboard.  If no keyboard input is available, this function waits
+          until  a keyboard  character  is available.   Returned  character
+          codes are the same as function 0Dh (IBM style scan codes). 
+
+
+
+
+
+
+
+                                                                         12
+
+
+          Function 0Fh - Flow Control for serial I/O.
+
+               Input:    AH = 0Fh
+                         AL = Bit defining the flow control to use
+                         DX = Port number
+
+               Output:   Nothing
+
+          Two kinds of basic flow control are supported.  One is  software,
+          called  Xon/Xoff  flow control.   The  other is  hardware, called
+          RTS/CTS flow  control.  Both  software and hardware  flow control
+          may be enabled at the same time.
+
+          The bits in the parameter passed in AL are as follows:
+
+                         Bit 0 = 1      Enable receiving of Xon/Xoff
+                         Bit 1 = 1      Enable RTS/CTS flow control
+
+                         Bit 2          Reserved (should be zero)
+                         Bit 3 = 1      Enable transmitting of Xon/Xoff
+
+          Setting  an appropriate bit to  zero will cause  the flow control
+          associated with that bit to be disabled.  
+
+          Enabling  the  receiving  of  Xon/Xoff  will  cause  X00  to stop
+          transmitting   upon  receiving   an  Xoff.     X00   will  resume
+          transmitting when an Xon is received.
+
+          Enabling the sending of  Xon/Xoff will cause X00 to send  an Xoff
+          when its buffers are 3/4  full.  When the buffers are  emptied to
+          1/4 full, X00 will send an Xon.
+
+          X00  WILL ALWAYS CEASE  TRANSMITTING WHEN CTS  IS LOWERED (TURNED
+          OFF).  TRANSMISSION WILL RESUME WHEN CTS IS RAISED (TURNED ON).
+
+          When  RTS/CTS flow control is  enabled, X00 will  drop (turn off)
+          RTS when  the receive buffer is  3/4 full.  X00  will raise (turn
+          on) RTS  when the  receive buffer empties  to 1/4 full.   RTS/CTS
+          flow control is almost  always used by modems that  operate above
+          2400  baud.    Some  2400  baud  modems  also  use/allow  RTS/CTS
+          handshaking
+
+          If the  baud rate is locked  in the command line  that loads X00,
+          RTS/CTS  handshaking is  forced.   In this case,  the application
+          program can not disable RTS/CTS handshaking.
+
+
+
+
+
+
+
+                                                                         13
+
+
+
+          Function 10h - Control-C  /  Control-K  checking and  transmitter
+                         disable/enable.
+
+               Input:    AH = 10h    
+                         AL = Control bits (defined below)
+                         DX = Port number
+
+               Output:   AX = 0001h - A Control-C/K has been received
+                            = 0000h - A Control-C/K has not been received
+
+          This is  used for BBS operation, primarily.  A bit mask is passed
+          in AL with the following flags:
+
+               Bit 0     Enable/disable Control-C / Control-K checking
+               Bit 1     Disable/enable the transmitter
+
+          To enable Control C/K checking set bit 0 = 1, to disable set  bit
+          0  = 0.    When checking  is  enabled,  a received  Control-C  or
+          Control-K will set  a flag  (internal to X00).   The  Control-C/K
+          character will not be stored  in the input buffer.  The  state of
+          the  internal Control-C/K flag will  be returned (then reset) the
+          next time  this function is  called.   The returned value  may be
+          used by the BBS software as it wishes.
+
+          The  transmitter disable  (bit 1  =  1) and  Enable (bit  1 =  0)
+          function lets the application program to inhibit the transmitter.
+
+          The disable of the transmitter is not absolute.  Several internal
+          functions can  cause the  transmitter to be  re-enabled, such  as
+          receiving an Xon when receiving of Xon/Xoff is enabled.
+
+          -----------------------------------------------------------------
+
+          Function 11h - Set current cursor location.
+
+               Input:    AH = 11h
+                         DH = Row (line)
+                         DL = Column
+
+               Output:   Nothing
+
+          This function  is exactly like INT 10h, subfunction 2, on the IBM
+          PC.  The  desired cursor location is passed in DX,  row in DH and
+          column in DL.  The row and column are relative to zero.  That is,
+          the home position on the screen is row 0, column 0.
+
+
+
+
+
+
+
+                                                                         14
+
+
+
+
+          Function 12h - Read current cursor location.
+
+               Input:    AH = 12h
+
+               Output:   DH = Row (line)
+                         DL = Column
+
+          This function  is exactly like INT 10h, subfunction 3, on the IBM
+          PC.   The  current  cursor location  (using  the same  coordinate
+          system as function 16h) is returned in DX.
+
+          -----------------------------------------------------------------
+
+          Function 13h - Single character ANSI write to screen.
+
+               Input:    AH = 13h
+                         AL = Character to display
+
+               Output:   Nothing
+
+          The character passed in AL is sent displayed on the screen at the
+          current cursor location.   ANSI.SYS type processing is performed.
+          This routine should  not be used  in such a  way that DOS  output
+          (which is not re-entrant)  can not be employed by  X00 to execute
+          the function.
+
+          -----------------------------------------------------------------
+
+          Function 14h - Enable or disable the DCD watchdog.
+
+               Input:    AH = 14h
+                         AL = 01h - Enable watchdog
+                            = 00h - Disable watchdog
+                         DX = Port number
+
+               Output:   Nothing
+
+          This  function enables  and  disables the  monitoring of  carrier
+          detect.   When enabled, the state  of the carrier detect (DCD) is
+          constantly  monitored  during  timer  tick  processing.    Should
+          carrier  detect  be  lost  (turned  off),  the  system  will   be
+          re-booted.  Activate/Deactivate etc  have no effect on the  state
+          of the DCD watchdog.
+
+
+
+
+
+
+
+                                                                         15
+
+
+          Function 15h - Write character to screen using BIOS.
+
+               Input:    AH = 15h
+                         AL = Character to display
+
+               Output:   Nothing
+
+          The character passed in AL is sent to the screen using BIOS-level
+          Input/Output routines.   This differs  from function 13h  in that
+          DOS I/O will not be used.
+
+          -----------------------------------------------------------------
+
+          Function 16h - Add or delete a routine from the timer tick chain.
+
+               Input:    AH = 16h
+                         AL = 01h - Add a function
+                            = 00h - Delete a function
+                         ES = Segment of function
+                         DX = Offset of function
+
+               Output:   AX =  0000h or  ticks per  second if  operation is
+                              successful
+                            = 0FFFFh - Operation unsuccessful
+
+          This function  is used to allow a central authority to manage the
+          timer interrupts, so that the integrity of the "timer tick chain"
+          is  not compromised.  Rather than using the traditional method of
+          saving  the old contents of the timer vector, storing the address
+          of your routine there, and calling the "old" routine, instead you
+          call this  function.  X00 manages a list of such entry points and
+          calls them on a timer tick (interrupt) using a FAR call.
+
+          X00  will allow  up to  4 programs  to hook  into the  timer tick
+          processing.  Interrupts  are enabled when the hooked routines are
+          called.
+
+          CAUTION, when  this FOSSIL function was  implemented, it provided
+          the  best  means to  hook into  the  timer tick  on multi-tasking
+          systems  at that time.   However, with  the 386  and virtual 8086
+          mode  of  operation  used by  DESQview,  Windows  V3.0 etc,  this
+          function  can crash the system.   The reason  is the virtual 8086
+          application (task/window) that  hooked in, may not be  the active
+          virtual 8086 (task/window) when the timer tick interrupt occurs.
+
+          Due to popularity of the virtual 8086 type multi-tasking systems,
+          the  author  (who  originally  insisted  that  this  function  be
+          created) RECOMMENDS THAT THIS FUNCTION NOT BE USED.
+
+
+
+
+
+
+
+                                                                         16
+
+
+          Function 17h - Reboot system.
+
+               Input:    AH = 17h
+                         AL = 00h - "Cold boot"
+                            = 01h - "Warm boot"
+
+               Output:   Nothing
+
+          This  function is intended primarily  as a security  feature.  It
+          provides  the  application  with  a  last resort  escape  from  a
+          situation that could allow a security breach.
+
+          -----------------------------------------------------------------
+
+          Function 18h - Block Read.
+
+
+               Input:    AH = 18h
+                         CX = Requested number of characters to transfer
+                         DX = Port number
+                         ES = Segment of the caller's buffer
+                         DI = Offset of the caller's buffer
+
+               Output:   AX = Number of characters actually transferred
+
+          This function will transfer from 0 to 65534 characters from X00's
+          inbound circular  buffer to  the caller's  buffer. ES:DI  are not
+          changed by  this function.   The  number of  bytes placed  in the
+          caller's buffer is  returned in AX.   The  number returned in  AX
+          will be the lesser of the caller's requested amount or the entire
+          contents (if any) of X00's receive buffer.
+
+          -----------------------------------------------------------------
+
+          Function 19h - Block Write.
+
+               Input:    AH = 19h
+                         CX = Requested number of characters to transfer
+                         DX = Port number
+                         ES = Segment of the caller's buffer
+                         DI = Offset of the caller's buffer
+
+               Output:   AX = Number of characters actually transferred
+
+          This function will transfer  from 0 to 65534 characters  to X00's
+          outbound  circular  buffer.    ES:DI  are  not  changed  by  this
+          function.  The number of bytes placed in X00's buffer is returned
+          in AX.   The  number returned  in AX  will be  the lesser  of the
+          caller's requested amount or the amount (if any) required to fill
+          X00's transmit buffer.
+
+
+
+
+
+
+
+                                                                         17
+
+
+
+
+
+
+
+
+
+
+
+
+
+          Function 1Ah - Break begin or end.
+
+               Input:    AH = 1Ah
+                         AL = 01h - Start sending 'break'
+                            = 00h - Stop sending 'break'
+                         DX = port number
+
+               Output:   Nothing
+
+          This function will  start or terminate a break signal.  If AL=01h
+          X00 will start the transmission  of a break.  If AL=00h  X00 will
+          terminate  any  break  signal.    This  function  is  useful  for
+          activating command mode on some modems.  The  application program
+          is responsible  for the timing  of the  BREAK.  If  X00 has  been
+          restrained by an Xoff received  from the modem, the flag  will be
+          cleared.   An  Activate or  Deavtivate will  stop an  in-progress
+          BREAK.  
+
+          It is the  experience of the author that the  duration of a break
+          should be less than 0.1 seconds.
+
+
+
+
+
+
+
+                                                                         18
+
+
+          Function 1Bh - Return information about X00.
+
+               Input:    AH = 1Bh
+                         CX = Size of caller's info buffer in bytes
+                         DX = Port number
+                         ES = Segment of caller's info buffer
+                         DI = Offset of caller's info buffer
+
+               Output:   AX = Number of bytes actually transferred
+                         CX = '0X'      First 2 bytes of 'X00 ' string
+                         DX = ' 0'      Second 2 bytes of 'X00 ' string
+
+          Note  that the  values returned  in CX  and DX  can be  stored in
+          memory to form a  space terminated string 'X00 '.   Additionally,
+          the values returned in CX and DX can be used to  determine if X00
+          is installed.
+
+          This function will transfer information about X00 and its current
+          status  to the  caller.   This  function  is intended  to  assist
+          "generic" applications to adjust to the current environment.
+
+          The data structure  (assembly language style)  currently returned
+          by X00 is as follows:
+
+               INFO      EQU  $              ;DEFINE BEGIN OF STRUCTURE
+               STRSIZ    DW   INFO_SIZE      ;SIZE OF THIS STRUC IN BYTES
+               MAJVER    DB   CURR_FOSSIL    ;FOSSIL SPECIFICATION REV
+               MINVER    DB   CURR_REV       ;REV OF THIS DRIVER.
+               IDENT     DD   ID_STRING      ;"FAR" POINTER TO ASCIIZ
+                                             ; DRIVER DESCRIPTION STRING.
+               IBUFR     DW   IBSIZE         ;BYTE SIZE OF THE INPUT BUFFER
+               IFREE     DW   ?              ;NUMBER OF BUFFERED RECV BYTES
+               OBUFR     DW   OBSIZE         ;BYTE SIZE OF THE XMIT BUFFER
+               OFREE     DW   ?              ;NUMBER OF BUFFERED XMIT BYTES
+               SWIDTH    DB   SCREEN_WIDTH   ;WIDTH OF DISPLAY SCREEN
+               SHEIGHT   DB   SCREEN_HEIGHT  ;HEIGHT OF DISPLAY SCREEN
+               BAUD      DB   ?              ;BAUD RATE, COMPUTER TO MODEM
+
+          The IDENT  string  is null-terminated,  and  does not  contain  a
+          newline.  The baud rate byte contains  the bits that Function 00h
+          would use to set the port to that speed.
+
+          The  fields related to a particular port (buffer size, space left
+          in the  buffer, baud rate) will  be undefined if port  0FFh or an
+          invalid port is contained in DX.
+
+          In some cases  X00 can  not accurately return  information.   For
+          example, the user can  lock the baud rate at  115200 when loading
+          X00.  There is no correct FOSSIL value that X00 can return in the
+          BAUD  field.  X00 will set the  BAUD field equal to the last baud
+          rate that the application attempted to set.
+
+
+
+
+
+
+
+                                                                         19
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          Superset Functions.
+
+          Function  numbers above 1Bh and below 7Eh are X00 only functions.
+          These functions will only  work with X00.  It is  the hope of the
+          author that these functions will be added by other FOSSIL authors
+          in  their  implementations  and  become  a  part  of  the  FOSSIL
+          specification.
+
+          Functions  1Ch and 1Dh are exact duplicated of FOSSIL functions 4
+          and 5.
+
+          Functions  1Eh and  1Fh are  intended to  be exact  duplicates of
+          functions 4 and 5 of the PS/2's BIOS INT 14h.
+
+          Function 20h is a destructive read with no wait.
+
+          Function 21h is a Stuff/Poke character into the receive buffer.
+
+
+
+
+
+
+
+                                                                         20
+
+
+
+
+
+
+
+
+
+          Function  1Ch is  a  duplicate of  function 4.   The  function is
+          duplicated so that at a future date, X00 functions 4 and 5 can be
+          made compatible to the PS/2's function 4 and 5.
+
+          Developers  are encouraged by the author to start using functions
+          1Ch and  1Dh instead of functions  4 and 5.   See the application
+          notes  section  for  instructions   on  a  compatible  method  of
+          determining  if functions 1Ch and  1Dh should be  used instead of
+          functions 4 and 5.
+
+          Function 1Ch - Activate Port.
+
+               Input:    AH = 1Ch
+                         DX = port number
+
+               Output:   AX = 1954h if successful
+                         BL  =  maximum  function  number   supported  (not
+                         counting functions 7Eh and above)
+                         BH = rev of FOSSIL specification supported
+
+          This function instructs X00  to use the FOSSIL  specification for
+          the specified port.  Prior to issuing this function, any function
+          that requires a port  number in DX will  be passed on to  BIOS or
+          X00's  INT 14h BIOS emulator.  When this function  is called, all
+          interrupts  involved   in  supporting  the   communications  port
+          (specified in DX) are set up for  support by X00.  DTR is  turned
+          on by this function.  The baud rate is NOT set or changed by this
+          function.
+
+          If an additional call  to this function occurs (2  Inits or Init,
+          Read, Init, etc.) X00 will reset (clear) all buffers and all flow
+          control is turned  off.  Values returned in the  registers upon a
+          re-init are the same as an initial init (defined above).
+
+
+
+
+
+
+
+                                                                         21
+
+
+
+
+
+
+
+
+
+
+
+
+
+          Function  1Dh  is a  duplicate of  function 5.   The  function is
+          duplicated so that at a future date, X00 functions 4 and 5 can be
+          made compatible to the PS/2's functions 4 and 5.
+
+          Developers  are encouraged by the author to start using functions
+          1Ch and  1Dh instead of functions  4 and 5.   See the application
+          notes  section  for  instructions  on  a  compatible  method   of
+          determining  if functions 1Ch and  1Dh should be  used instead of
+          functions 4 and 5.
+
+          Function 1Dh - Deactivate Port.
+
+               Input:    AH = 1Dh
+                         DX = Port number
+
+               Output:   Nothing
+
+          This function instructs X00  that it should no longer  to process
+          calls for  specified port (in DX) using the FOSSIL specification.
+          If the port was never activated by function 4, then this function
+          is ignored.  Any  subsequent function calls, that require  a port
+          number  in  DX, will  be  passed  to BIOS  or  the  BIOS INT  14h
+          emulator.
+
+
+
+
+
+
+
+                                                                         22
+
+
+
+          Function 1Eh - Extended line control initialization.
+
+          This  function is intended to exactly emulate the PS/2's BIOS INT
+          14 services, function 4.  Some  or all of the functions  provided
+          here are duplicated by other X00 functions.
+
+               Input:    AH = 1Eh
+
+                         AL = Break, Where:
+                            = 00h, No break and/or turn off break
+                            = 01h, Start send of break.
+
+                         BH = Parity, where:
+                            = 00h, No parity
+                            = 01h, Odd parity
+                            = 02h, Even parity
+                            = 03h, Mark parity (always 1)
+                            = 04h, Space parity (always 0)
+
+                         BL = Stop bits, where:
+                            = 00h, One stop bit
+                            = 01h, Two stop  bits for 6,  7 and 8  bit word
+                                   length, 1  and 1/2  stop bits for  5 bit
+                                   word length.
+
+                         CH = Word length, where:
+                            = 00h, 5 bits
+                            = 01h, 6 bits
+                            = 02h, 7 bits
+                            = 03h, 8 bits
+
+                         CL = Baud rate, where:
+                            = 00h, 110 baud
+                            = 01h, 150 baud
+                            = 02h, 300 baud
+                            = 03h, 600 baud
+                            = 04h, 1200 baud
+                            = 05h, 2400 baud
+                            = 06h, 4800 baud
+                            = 07h, 9600 baud
+                            = 08h, 19200 baud
+
+                         DX = Port number
+
+               Output:   AX = Port status (see function 03h)
+
+          If  locked at X00 load  time, the appropriate  parameters of this
+          function are ignored.
+
+
+
+
+
+
+
+                                                                         23
+
+
+
+
+          Function 1Fh - Extended serial port status/control.
+
+          This  function is intended to exactly emulate the PS/2's BIOS INT
+          14 services, function  5.  Some or all of  the functions provided
+          here are duplicated by other X00 functions.   This function has 2
+          subfunctions specified by AL.
+
+          Subfunction 00h - Read MCR
+
+               Input:    AH = 1Fh
+                         AL = 00h, Read modem control register (MCR)
+                         DX = Port number
+
+               Output:   AX = Port status (see function 03h)
+                         BL = Modem control register, where:
+                              Bits 7-5 = 0 (Reserved)
+                              Bit 4    = 1 Loopback mode
+                              Bit 3    = 1 OUT2 (interrupts) enabled
+                              Bit 2    = 1 OUT1 active
+                              Bit 1    = 1 Request to send active
+                              Bit 0    = 1 Data terminal ready (DTR) active
+
+          Subfunction 01h - Write MCR
+
+               Input:    AH = 1Fh
+                         AL = 01h, Write modem control register (MCR)
+                         BL = Modem control register, where:
+                              Bits 7-5 = 0 (Reserved)
+                              Bit 4    = 1 Set loopback mode
+                              Bit 3    = 1 Set OUT2 enable interrupts
+                              Bit 2    = 1 Set OUT1 active (on)
+                              Bit 1    = 1 Set Request to send active (on)
+                              Bit 0    = 1 Set DTR active (on)
+                         DX = Port number
+
+               Output:   AX = Port status (see function 03h)
+
+          In subfunction 01h (write  MCR) X00 will force bit 3  to 1.  That
+          is,  X00  will not  allow  the  communications interrupts  to  be
+          disabled.
+
+          RTS may  be used  as a  flow  control signal  by X00.   When  the
+          application program writes the MCR, the  RTS bit is treated as an
+          RTS enable  bit.   This  means  that X00  will always  allow  the
+          application program to turn RTS off.  However, X00 will  not turn
+          on RTS unless it is safe to do so.
+
+
+
+
+
+
+
+                                                                         24
+
+
+
+          Function 20h - Read with no wait (destructive).
+
+
+               Input:    AH = 20h
+                         DX = Port number
+
+               Output:   AH = 00h if character is available
+                         AL = Next character if available
+                         AX = 0FFFFh If no character is available
+
+          This function returns the next character from the receive buffer.
+          If the receive buffer is  empty, 0FFFFh is returned in AX.   This
+          function  is the same as  function 0Ch except  that any character
+          returned is removed from the receive buffer.
+
+          ----------------------------------------------------------------
+
+          Function 21h - Stuff/Poke the receive buffer.
+
+
+               Input:    AH = 20h
+                         AL = Character to place in the receive buffer
+
+               Output:   Nothing
+
+          This function will  insert the passed character  into the receive
+          buffer (at the end).  Subsequent reading of the serial input will
+          read the character.  The character is inserted at the  end of the
+          buffer (as though it were just received).
+
+          The  character is inserted into the receive buffer by calling the
+          receive interrupt  routine.    All  normal  receive  checking  is
+          preformed on the character.  Some things to note are:
+
+               If  receiving  of  Xon/Xoff  is   enabled  and  an  Xoff  is
+               stuffed/poked  into the  buffer,  the transmitter  will stop
+               until a an Xon is received or stuffed/poked.
+
+               If  Control C/K  checking is  enabled and  a Control  C/K is
+               stuffed/poked, then the character  is not put in  the buffer
+               and the internal flags is set.
+
+          The above should give you a little to think about when using this
+          function.
+
+          This  function  is intended  to be  fully  re-entrant.   Thus, it
+          should be callable from timer tick processing etc.
+
+
+
+
+
+
+
+                                                                         25
+
+
+
+
+          "Layered Application" services.
+
+
+          The   functions   below  are   provided   to   meet  the   FOSSIL
+          specification.   The following  functions  in effect  make X00  a
+          dispatcher for other programs.
+
+          To  operate  properly  on   a  multi-port  system,  any  "Layered
+          Application" must be re-entrant.   The only "Layered Application"
+          know  to the  author is  called a  Video FOSSIL.   The  one Video
+          Fossil known to the author is not re-entrant and can  not be used
+          on a multi-port system.
+
+
+          Function 7Eh - Install an "external application" function.
+
+               Input:    AH = 7Eh    
+                         AL = Code assigned to external application
+                         DX = Offset of application entry point
+                         ES = Segment of application entry point
+
+               Output:   AX = 1954h
+                         BL = Code given to application (same as input AL)
+                         BH = 01h - Installation was successful
+                            = 00h - Installation failed
+
+          This  function may be used by  external application code (special
+          screen  drivers, modem code, database code, etc) to link into the
+          INT 14h service  for use  by multiple applications.   The  "error
+          return"  (BH=0   with  AX=1954h)   should  mean  that     another
+          application layer  has already been installed  at that particular
+          code. Codes 80h through 0BFh are be supported.  
+
+          External   application  codes  80h-83h  are  reserved  by  FOSSIL
+          developers  for  re-organizing  FOSSIL  services by  type  (comm,
+          screen, keyboard, system).  
+
+          Installed  application code will be entered, via a FAR call, from
+          the  INT 14H  dispatcher  whenever  it  is  entered  (with  AH  =
+          application code).
+
+          If the value returned in AX  from this function is not 1954h, the
+          service code that  is trying to be installed should  bring up its
+          own  INT  14h code  that can  service  INT 14h  functions 7h-0BFh
+          (80h-0BFh are "applications").
+
+
+
+
+
+
+
+                                                                         26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          Function 7Fh - Remove an "external application" function.
+
+               Input:    AH = 7Fh
+                         AL = Code assigned to external application
+                         DX = Offset of application entry point
+                         ES = Segment of application entry point
+
+               Output:   AX = 1954h
+                         BL = Code given to application (same as input AL)
+                         BH = 01h - Removal was successful
+                            = 00h - Removal failed
+
+          This  function removes an application's entry from the table.  If
+          an error is returned, this means ES:DX did not match any entry at
+          the  slot described by  AL.  An application  that wants to remove
+          itself from memory  can issue  the 7F function  to remove  itself
+          from  the  table,  then,  if it  is  successful,  un-install.  If
+          installed with an INT  14h dispatcher it may  un-install provided
+          no other application(s) have  been installed on top of  it (using
+          its dispatcher).
+
+
+
+
+
+
+
+                                                                         27
+
+
+                                  Application Notes.
+
+          Which Activate/Deactivate functions to use
+
+          It is  the hope of  the author (after  a period of  time) to make
+          X00's  functions 4  and  5 compatible  with  the PS/2's  INT  14h
+          functions  4  and 5.    Currently, X00's  functions 4  and  5 are
+          duplicated at functions 1Ch and 1Dh respectively.  I request that
+          application  programmers start  using  functions 1Ch  and 1Dh  if
+          those  functions are available.   That is, use  functions 1Ch and
+          1Dh instead of functions 4 and 5 respectively.
+
+          It is relatively simple to determine if the  functions at 1Ch and
+          1Dh are available.   When your  program is ready to  activate X00
+          for a given port, issue function 1Ch.  If 1954h is returned, then
+          the port  is activated.   If 1954h  is not returned,  reissue the
+          request to function 4.  Save the function number actually used to
+          activate the port,  then increment  it by one  to deactivate  the
+          port.
+
+          Watch out for disk I/O
+
+          Chris Irwin deserves  credit for discovering and  informing me of
+          the following:  On  some (if not all) IBM/Clones,  interrupts are
+          masked  for a long  period of  time during  DOS disk  I/O.   As a
+          result, data  characters were  being lost  during  receive.   The
+          problem is most noticeable on slower (4.77 meg) systems with 8250
+          or 16450 type SIO chips installed using high speed modems.
+
+          Remembering  that  all high  speed modems  (that  I know  of) use
+          RTS/CTS  handshaking, I implemented a back door hook in some Beta
+          X00s that  allowed Chris to turn  RTS off prior to  any disk I/O.
+          Turning off  RTS while  a disk  write is  taking place fixed  the
+          problem.   Also, turning off RTS  during disk I/O had  no adverse
+          effect  on the transfer speed due to the modems internal buffers.
+          While RTS is off,  the modem simply buffers the  data internally.
+          When  RTS is  again  turned on,  the  modems internal  buffer  is
+          emptied  because the transfer rate from the modem to the computer
+          is faster than the line receive rate.
+
+          X00  now has a front door (documented) function (1Fh) that allows
+          application  programs to disable RTS.  Note that X00 function 1Fh
+          is not a FOSSIL function.  I hope that it  will eventually become
+          a FOSSIL function.  X00s function  1Fh is close to a duplicate of
+          the PS/2's BIOS INT 14h, function 5.
+
+          I strongly suggest that  application programmers consider turning
+          off (disabling) RTS prior to any disk  I/O.  Even if the modem is
+          not  using RTS/CTS handshaking, turning  off RTS will  not do any
+          harm (that I know of).
+
+
+
+
+
+
+
+                                                                         28
+
+
+
+
+
+          Successive timer tick calls
+
+          In some  environments,  the timer  tick chain  is called  several
+          times in succession with  no delay between the calls.   I believe
+          that one such environment is DESQview.  If a task has been asleep
+          for 10  timer ticks, the timer tick chain will be called 10 times
+          when the task is activated.
+
+          X00 checks the DWORD at 46Ch.  If the  value at that location has
+          not  changed,  X00  ignores  the  timer  tick.    Any  hooked  in
+          application programs are not called.
+
+          This  means  that the  timer tick  is  not reliable  for accurate
+          timing.   All programs  (that I  know of)  that alter  the normal
+          timer  tick  processing keeps  the DWORD  at  46Ch (time  of day)
+          updated.  If not, your  time of day will be off.  If  you need to
+          know elapsed  time, do not count  timer ticks.  Use  the DWORD at
+          46Ch to calculate elapsed time.  The value stored in the DWORD at
+          46Ch  is the number of timer ticks  since the computer was booted
+          or the number of timer ticks past midnight.
+
+
+
+
+
+
+
+                                                                         29
+
+
+
+          Application Notes . . . . . . . . . . . . . . . . . . . . . .  27
+          FOSSIL  . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          Function 00h  . . . . . . . . . . . . . . . . . . . . . . . . . 4
+          Function 01h  . . . . . . . . . . . . . . . . . . . . . . . . . 5
+          Function 02h  . . . . . . . . . . . . . . . . . . . . . . . . . 5
+          Function 03h  . . . . . . . . . . . . . . . . . . . . . . . . . 6
+          Function 04h  . . . . . . . . . . . . . . . . . . . . . . . . . 7
+          Function 05h  . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          Function 06h  . . . . . . . . . . . . . . . . . . . . . . . . . 8
+          Function 07h  . . . . . . . . . . . . . . . . . . . . . . . . . 9
+          Function 08h  . . . . . . . . . . . . . . . . . . . . . . . . . 9
+          Function 09h  . . . . . . . . . . . . . . . . . . . . . . . . . 9
+          Function 0Ah  . . . . . . . . . . . . . . . . . . . . . . . .  10
+          Function 0Bh  . . . . . . . . . . . . . . . . . . . . . . . .  10
+          Function 0Ch  . . . . . . . . . . . . . . . . . . . . . . . .  10
+          Function 0Dh  . . . . . . . . . . . . . . . . . . . . . . . .  11
+          Function 0Eh  . . . . . . . . . . . . . . . . . . . . . . . .  11
+          Function 0Fh  . . . . . . . . . . . . . . . . . . . . . . . .  12
+          Function 10h  . . . . . . . . . . . . . . . . . . . . . . . .  13
+          Function 11h  . . . . . . . . . . . . . . . . . . . . . . . .  13
+          Function 12h  . . . . . . . . . . . . . . . . . . . . . . . .  14
+          Function 13h  . . . . . . . . . . . . . . . . . . . . . . . .  14
+          Function 14h  . . . . . . . . . . . . . . . . . . . . . . . .  14
+          Function 15h  . . . . . . . . . . . . . . . . . . . . . . . .  15
+          Function 16h  . . . . . . . . . . . . . . . . . . . . . . . .  15
+          Function 17h  . . . . . . . . . . . . . . . . . . . . . . . .  16
+          Function 18h  . . . . . . . . . . . . . . . . . . . . . . . .  16
+          Function 19h  . . . . . . . . . . . . . . . . . . . . . . . .  16
+          Function 1Ah  . . . . . . . . . . . . . . . . . . . . . . . .  17
+          Function 1Bh  . . . . . . . . . . . . . . . . . . . . . . . .  18
+          Function 1Ch  . . . . . . . . . . . . . . . . . . . . . . . .  20
+          Function 1Dh  . . . . . . . . . . . . . . . . . . . . . . . .  21
+          Function 1Eh  . . . . . . . . . . . . . . . . . . . . . . . .  22
+          Function 1Fh  . . . . . . . . . . . . . . . . . . . . . . . .  23
+          Function 20h  . . . . . . . . . . . . . . . . . . . . . . . .  24
+          Function 21h  . . . . . . . . . . . . . . . . . . . . . . . .  24
+          Function 7Eh  . . . . . . . . . . . . . . . . . . . . . . . .  25
+          Function 7Fh  . . . . . . . . . . . . . . . . . . . . . . . .  26
+          Licensing Information . . . . . . . . . . . . . . . . . . . . . 2
+               Commercial License . . . . . . . . . . . . . . . . . . . . 2
+               Non-Commercial License . . . . . . . . . . . . . . . . . . 2
+          RTS/CTS flow control  . . . . . . . . . . . . . . . . . . . .  12
+          SIO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          Warranty  . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          WHAT IS X00 . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+          Xon/Xoff flow control . . . . . . . . . . . . . . . . . . . .  12
+
